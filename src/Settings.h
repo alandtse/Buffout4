@@ -58,6 +58,7 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Fixes", UnalignedLoad, true);
 	MAKE_SETTING(bSetting, "Fixes", UtilityShader, true);
 	MAKE_SETTING(bSetting, "Fixes", WorkBenchSwap, true);
+	MAKE_SETTING(bSetting, "Fixes", PipboyLightInvFix, true);
 
 	MAKE_SETTING(bSetting, "Patches", Achievements, true);
 	MAKE_SETTING(bSetting, "Patches", BSMTAManager, true);
@@ -122,6 +123,7 @@ namespace Settings
 		LOAD(UnalignedLoad);
 		LOAD(UtilityShader);
 		LOAD(WorkBenchSwap);
+		LOAD(PipboyLightInvFix);
 
 		LOAD(Achievements);
 		LOAD(BSMTAManager);
