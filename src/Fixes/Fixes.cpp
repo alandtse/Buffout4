@@ -75,6 +75,10 @@ namespace Fixes
 		if (*Settings::UtilityShader) {
 			UtilityShaderFix::Install();
 		}
+
+		if (*Settings::PipboyLightInvFix) {
+			PipboyLightInvFix::Install();
+		}
 #endif
 	}
 }

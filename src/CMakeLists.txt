@@ -61,6 +61,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/MagicEffectApplyEventFix.h"
 	"${SOURCE_DIR}/Fixes/MovementPlannerFix.h"
 	"${SOURCE_DIR}/Fixes/PackageAllocateLocationFix.h"
+	"${SOURCE_DIR}/Fixes/PipboyLightInvFix.h"
 	"${SOURCE_DIR}/Fixes/SafeExitFix.h"
 	"${SOURCE_DIR}/Fixes/TESObjectREFRGetEncounterZoneFix.h"
 	"${SOURCE_DIR}/Fixes/UnalignedLoadFix.h"
