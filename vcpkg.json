@@ -32,11 +32,5 @@
     "zycore",
     "zydis"
   ],
-  "builtin-baseline": "36fb23307e10cc6ffcec566c46c4bb3f567c82c6",
-  "overrides": [
-    {
-      "name": "fmt",
-      "version": "8.0.1"
-    }
-  ]
+  "builtin-baseline": "36fb23307e10cc6ffcec566c46c4bb3f567c82c6"
 }
