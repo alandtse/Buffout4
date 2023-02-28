@@ -107,7 +107,7 @@ namespace Crash
 		for (std::size_t i = 0; i < _frames.size(); ++i) {
 			const auto mod = moduleStack[i];
 			const auto& frame = _frames[i];
-			a_log.critical(format, i, reinterpret_cast<std::uintptr_t>(frame.address()), (mod ? mod->name() : ""sv),
+			a_log.critical(fmt::runtime(format), i, reinterpret_cast<std::uintptr_t>(frame.address()), (mod ? mod->name() : ""sv),
 				(mod ? mod->frame_info(frame) : ""s));
 		}
 	}
@@ -119,7 +119,7 @@ namespace Crash
 		const auto format = "\t[{:>"s + get_size_string(_stacktrace.size()) + "}] 0x{:X}"s;
 
 		for (std::size_t i = 0; i < _stacktrace.size(); ++i) {
-			a_log.critical(format, i, reinterpret_cast<std::uintptr_t>(_stacktrace[i].address()));
+			a_log.critical(fmt::runtime(format), i, reinterpret_cast<std::uintptr_t>(_stacktrace[i].address()));
 		}
 	}
 
@@ -283,7 +283,7 @@ namespace Crash
 			}();
 
 			for (const auto& mod : a_modules) {
-				a_log.critical(format, mod->name(), mod->address());
+				a_log.critical(fmt::runtime(format), mod->name(), mod->address());
 			}
 		}
 
@@ -299,7 +299,7 @@ namespace Crash
 						return "\t[{:>02X}]{:"s + (!smallfiles.empty() ? "5"s : "1"s) + "}{}"s;
 					}();
 					for (const auto file : files) {
-						a_log.critical(fileFormat, file->GetCompileIndex(), "", file->GetFilename());
+						a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
 					}
 					for (const auto file : smallfiles) {
 						a_log.critical("\t[FE:{:>03X}] {}"sv, file->GetSmallFileCompileIndex(), file->GetFilename());
@@ -308,7 +308,7 @@ namespace Crash
 					auto& files = datahandler->files;
 					const auto fileFormat = [&]() { return "\t[{:>02X}]{:"s + "}{}"s; }();
 					for (const auto file : files) {
-						a_log.critical(fileFormat, file->GetCompileIndex(), "", file->GetFilename());
+						a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
 					}
 				}
 			}
@@ -398,7 +398,7 @@ namespace Crash
 					const auto analysis = Introspection::analyze_data(
 						stack.subspan(off, std::min<std::size_t>(stack.size() - off, blockSize)), a_modules);
 					for (const auto& data : analysis) {
-						a_log.critical(format, idx * sizeof(std::size_t), stack[idx], data);
+						a_log.critical(fmt::runtime(format), idx * sizeof(std::size_t), stack[idx], data);
 						++idx;
 					}
 				}

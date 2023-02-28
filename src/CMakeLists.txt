@@ -352,6 +352,7 @@ add_custom_target(build-time-make-directory ALL
 )
 
 message("Copying mod into ${ZIP_DIR}.")
+file(MAKE_DIRECTORY "${ZIP_DIR}/F4SE/Plugins/")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${ZIP_DIR}/F4SE/Plugins/"
 )

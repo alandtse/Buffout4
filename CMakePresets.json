@@ -63,14 +63,41 @@
       "cacheVariables": {
         "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /external:W0"
       },
+      "hidden": true,
+      "name": "vs2022-flags"
+    },
+    {
       "generator": "Visual Studio 17 2022",
       "inherits": [
+        "vs2022-flags",
         "cmake-dev",
         "vcpkg",
         "windows"
       ],
       "name": "vs2022-windows-vcpkg",
       "toolset": "v143"
+    },
+    {
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "architecture": {
+        "strategy": "external",
+        "value": "x64"
+      },
+      "toolset": {
+        "strategy": "external",
+        "value": "v143,host=x64"
+      },
+      "generator": "Ninja",
+      "inherits": [
+        "vs2022-flags",
+        "cmake-dev",
+        "vcpkg",
+        "windows"
+      ],
+      "description": "If you are running CMake from the command line and not from an IDE, make sure to run 'vcvars64.bat' first. The default installed location of this is 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat'.",
+      "name": "vs2022-ninja-windows-vcpkg"
     }
   ]
 }
