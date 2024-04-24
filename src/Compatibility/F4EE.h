@@ -1,6 +1,9 @@
 #pragma once
 
+#define NOMINMAX
 #include "hash.h"
+#include <F4SE/Impl/WinAPI.h>
+#include <windows.h>
 
 namespace Compatibility::F4EE
 {
@@ -49,7 +52,7 @@ namespace Compatibility::F4EE
 			return false;
 		};
 
-		const auto handle = GetModuleHandle(L"f4ee.dll");
+		const auto handle = GetModuleHandle("f4ee.dll");
 		if (handle != nullptr && validate()) {
 			const auto base = reinterpret_cast<std::uintptr_t>(handle);
 			detail::SetMorphValues(base);

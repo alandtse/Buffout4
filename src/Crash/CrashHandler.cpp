@@ -563,6 +563,7 @@ namespace Crash
 			} catch (...) {}
 
 			::WinAPI::TerminateProcess(::WinAPI::GetCurrentProcess(), EXIT_FAILURE);
+			return 0;
 		}
 
 		std::int32_t _stdcall VectoredExceptions(::EXCEPTION_POINTERS*) noexcept

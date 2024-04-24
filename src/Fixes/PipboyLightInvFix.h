@@ -36,7 +36,7 @@ namespace Fixes::PipboyLightInvFix
 		const auto base = REL::Offset(0xf2d240).address();
 		REL::Relocation<std::uintptr_t> target{ base + 0xD21 };
 		REL::Relocation<std::uintptr_t> resume{ base + 0xD2b };
-		REL::Relocation<std::uintptr_t> returnAddr{ base + 0xE16 };
+		REL::Relocation<std::uintptr_t> returnAddr{ base + 0xE4A };
 
 		const auto instructionBytes = resume.address() - target.address();
 		for (std::size_t i = 0; i < instructionBytes; i++) {

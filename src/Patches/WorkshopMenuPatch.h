@@ -37,7 +37,7 @@ namespace Patches::WorkshopMenuPatch
 						const auto lname = get_name(a_lhs);
 						const auto rname = get_name(a_rhs);
 						const auto cmp = !lname.empty() && !rname.empty() ?
-                                             _strnicmp(lname.data(), rname.data(), std::min(lname.size(), rname.size())) :
+						                     _strnicmp(lname.data(), rname.data(), (((lname.size()) < (rname.size())) ? (lname.size()) : (rname.size()))) :
                                              0;
 						return cmp == 0 && lname.size() != rname.size() ?
                                    lname.size() < rname.size() ? -1 : 1 :
@@ -246,7 +246,7 @@ namespace Patches::WorkshopMenuPatch
 			const std::vector<cobj_t> _cobjs = []() {                                      // pre-filter cobjs
 				const auto filters = []() -> std::span<const RE::BGSKeyword*> {
 					if (const auto keywords = RE::BGSKeyword::GetTypedKeywords(); keywords) {
-						auto& filters = (*keywords)[stl::to_underlying(RE::BGSKeyword::KeywordType::kRecipeFilter)];
+						auto& filters = (*keywords)[stl::to_underlying(RE::KeywordType::kRecipeFilter)];
 						return { const_cast<const RE::BGSKeyword**>(filters.data()), filters.size() };
 					} else {
 						return {};
