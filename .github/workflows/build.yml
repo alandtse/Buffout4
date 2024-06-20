@@ -77,15 +77,15 @@ jobs:
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: 6.x.x
       - name: Download NexusUploader
         if: steps.semantic.outputs.new_release_published == 'true'
-        run: dotnet tool install -g NexusUploader
+        run: dotnet tool install -g BUTR.NexusUploader
       - name: Upload files to Nexus
-      # https://github.com/agc93/nexus-uploader
+      # https://github.com/agc93/nexus-uploader using fork https://github.com/BUTR/BUTR.NexusUploader
         if: steps.semantic.outputs.new_release_published == 'true'
         env:
-          UNEX_COOKIES: ${{ secrets.UNEX_COOKIES }}
+          UNEX_SESSION_COOKIE: ${{ secrets.NEXUSMODS_SESSION_COOKIE }}
           UNEX_APIKEY: ${{ secrets.UNEX_APIKEY }}
           UNEX_GAME: fallout4
           UNEX_MODID: 64880
@@ -99,4 +99,4 @@ jobs:
           changelog: ${{ steps.semantic.outputs.new_release_notes }}
         run: |
           unex upload $UNEX_MODID $file -v $version
-          unex changelog $version "$changelog"
+          unex changelog $version -c "$changelog"
