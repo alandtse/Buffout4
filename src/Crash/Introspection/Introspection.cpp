@@ -315,7 +315,7 @@ namespace Crash::Introspection::F4
 						auto sourcefile = sourcefiles->data()[index];
 						filesString = filesString.empty() ? fmt::format("{}"sv,
 																sourcefile->GetFilename().data()) :
-                                                            fmt::format("{} -> {}"sv,
+						                                    fmt::format("{} -> {}"sv,
 																filesString, sourcefile->GetFilename().data());
 					}
 					a_results.emplace_back(
@@ -742,8 +742,8 @@ namespace Crash::Introspection
 			Integer(std::size_t a_value) noexcept :
 				_value(a_value),
 				name_string(a_value >> 63 ?
-                                fmt::format(fmt::runtime("(size_t) [uint: {} int: {}]"s), _value, static_cast<std::make_signed_t<size_t>>(_value)) :
-                                fmt::format(fmt::runtime("(size_t) [{}]"s), _value))
+								fmt::format(fmt::runtime("(size_t) [uint: {} int: {}]"s), _value, static_cast<std::make_signed_t<size_t>>(_value)) :
+								fmt::format(fmt::runtime("(size_t) [{}]"s), _value))
 			{
 			}
 

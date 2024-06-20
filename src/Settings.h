@@ -112,7 +112,7 @@ namespace Settings
 	}
 
 		LOAD(ActorIsHostileToActor);
-		LOAD(BSLightingShaderMaterialGlowmap);		
+		LOAD(BSLightingShaderMaterialGlowmap);
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
 		LOAD(EncounterZoneReset);

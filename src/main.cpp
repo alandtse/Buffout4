@@ -240,7 +240,7 @@ namespace
 				const auto it = std::find(cache.begin(), cache.end(), preCppInit.address());
 				return it != cache.end() ? it + 1 :
 				       !cache.empty()    ? cache.begin() + 1 :
-                                           cache.end();
+				                           cache.end();
 			}();
 			cache.insert(pos, reinterpret_cast<std::uintptr_t>(proxy));
 

@@ -13,10 +13,10 @@ namespace Fixes::BSLightingShaderMaterialGlowmapFix
 				Xbyak::Label retLab;
 
 				// code clobbered at target is placed here
-				mov(qword[rsp+0x60], rbx);
+				mov(qword[rsp + 0x60], rbx);
 				// end clobbered code
-				test(rbx, rbx); // nullptr check on rbx
-				jz("returnFunc"); // jump to returnFunc if rbx is null
+				test(rbx, rbx);    // nullptr check on rbx
+				jz("returnFunc");  // jump to returnFunc if rbx is null
 				jmp(ptr[rip + contLab]);
 
 				L("returnFunc");
@@ -37,7 +37,7 @@ namespace Fixes::BSLightingShaderMaterialGlowmapFix
 		const auto base = REL::Offset(0x1d97d84).address();
 		REL::Relocation<std::uintptr_t> target{ base };
 		REL::Relocation<std::uintptr_t> resume{ base + 0x5 };
-		REL::Relocation<std::uintptr_t> returnAddr{ base + 0xBD5 }; // 141d98959
+		REL::Relocation<std::uintptr_t> returnAddr{ base + 0xBD5 };  // 141d98959
 		const auto instructionBytes = resume.address() - target.address();
 		for (std::size_t i = 0; i < instructionBytes; i++) {
 			REL::safe_write(target.address() + i, REL::NOP);

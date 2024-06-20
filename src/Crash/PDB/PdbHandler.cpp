@@ -274,8 +274,8 @@ namespace Crash
 				for (const auto& elem : std::filesystem::directory_iterator(Crash::PDB::sPluginPath)) {
 					if (const auto filename =
 							elem.path().has_filename() ?
-                                std::make_optional(elem.path().filename().string()) :
-                                std::nullopt;
+								std::make_optional(elem.path().filename().string()) :
+								std::nullopt;
 						filename.value().ends_with("dll")) {
 						dumpFileSymbols(elem.path(), retflag);
 						if (retflag == 3)

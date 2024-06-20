@@ -95,8 +95,8 @@ namespace Patches::MemoryManagerPatch
 				if (a_size > 0) {
 					auto& heap = Allocator::ProxyHeap::get();
 					return a_alignmentRequired ?
-                               heap.aligned_alloc(a_alignment, a_size) :
-                               heap.malloc(a_size);
+					           heap.aligned_alloc(a_alignment, a_size) :
+					           heap.malloc(a_size);
 				} else {
 					return nullptr;
 				}
@@ -118,8 +118,8 @@ namespace Patches::MemoryManagerPatch
 			{
 				auto& heap = Allocator::ProxyHeap::get();
 				a_alignmentRequired ?
-                    heap.aligned_free(a_mem) :
-                    heap.free(a_mem);
+					heap.aligned_free(a_mem) :
+					heap.free(a_mem);
 			}
 
 			void DbgDeallocate(RE::MemoryManager* a_this, void* a_mem, bool a_alignmentRequired);
@@ -128,8 +128,8 @@ namespace Patches::MemoryManagerPatch
 			{
 				auto& heap = Allocator::ProxyHeap::get();
 				return a_alignmentRequired ?
-                           heap.aligned_realloc(a_alignment, a_oldMem, a_newSize) :
-                           heap.realloc(a_oldMem, a_newSize);
+				           heap.aligned_realloc(a_alignment, a_oldMem, a_newSize) :
+				           heap.realloc(a_oldMem, a_newSize);
 			}
 
 			inline void* DbgReallocate(RE::MemoryManager* a_this, void* a_oldMem, std::size_t a_newSize, std::uint32_t a_alignment, bool a_alignmentRequired)
@@ -187,8 +187,8 @@ namespace Patches::MemoryManagerPatch
 			{
 				auto& heap = Allocator::ProxyHeap::get();
 				return a_size > 0 ?
-                           heap.aligned_alloc(a_alignment, a_size) :
-                           nullptr;
+				           heap.aligned_alloc(a_alignment, a_size) :
+				           nullptr;
 			}
 
 			inline RE::ScrapHeap* Ctor(RE::ScrapHeap* a_this)

@@ -7,8 +7,8 @@ namespace Patches::MaxStdIOPatch
 		const auto handle = GetModuleHandle(L"msvcr110.dll");
 		const auto proc =
 			handle ?
-                reinterpret_cast<decltype(&_setmaxstdio)>(WinAPI::GetProcAddress(handle, "_setmaxstdio")) :
-                nullptr;
+				reinterpret_cast<decltype(&_setmaxstdio)>(WinAPI::GetProcAddress(handle, "_setmaxstdio")) :
+				nullptr;
 		if (proc != nullptr) {
 			const auto result = proc(static_cast<int>(*Settings::MaxStdIO));
 			logger::info("set max stdio to {}"sv, result);

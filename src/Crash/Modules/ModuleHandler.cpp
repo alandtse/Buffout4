@@ -83,8 +83,8 @@ namespace Crash::Modules
 					reinterpret_cast<const char*>(a_data.data()),
 					reinterpret_cast<const char*>(a_data.data() + a_data.size()));
 				return first != last ?
-                           reinterpret_cast<const RE::RTTI::TypeDescriptor*>(first - offset) :
-                           nullptr;
+				           reinterpret_cast<const RE::RTTI::TypeDescriptor*>(first - offset) :
+				           nullptr;
 			}
 
 			[[nodiscard]] static auto complete_object_locator(
