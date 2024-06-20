@@ -9,8 +9,8 @@ namespace Patches::INISettingCollectionPatch
 			static bool thunk(RE::INISettingCollection& a_self, bool a_write)
 			{
 				return std::filesystem::exists(a_self.settingFile) ?
-                           func(a_self, a_write) :
-                           false;
+				           func(a_self, a_write) :
+				           false;
 			}
 
 			static inline REL::Relocation<decltype(thunk)> func;

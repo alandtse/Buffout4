@@ -13,8 +13,8 @@ namespace Patches::SmallBlockAllocatorPatch
 		{
 			auto& heap = Allocator::ProxyHeap::get();
 			return a_size > 0 ?
-                       heap.aligned_alloc(0x10, a_size) :
-                       nullptr;
+			           heap.aligned_alloc(0x10, a_size) :
+			           nullptr;
 		}
 
 		inline void Deallocate(void* a_ptr)

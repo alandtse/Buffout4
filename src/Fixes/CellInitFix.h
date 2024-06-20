@@ -8,8 +8,8 @@ namespace Fixes::CellInitFix
 		{
 			const auto xLoc =
 				a_cell && a_cell->extraList ?
-                    a_cell->extraList->GetByType<RE::ExtraLocation>() :
-                    nullptr;
+					a_cell->extraList->GetByType<RE::ExtraLocation>() :
+					nullptr;
 			auto loc = xLoc ? xLoc->location : nullptr;
 
 			if (loc && a_cell && !a_cell->IsInitialized()) {

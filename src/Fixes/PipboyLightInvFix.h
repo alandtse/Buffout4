@@ -33,10 +33,10 @@ namespace Fixes::PipboyLightInvFix
 	inline void Install()
 	{
 		const auto base = REL::ID(566261).address();
-		
+
 		REL::Relocation<std::uintptr_t> target{ base + REL::Relocate<std::uintptr_t>(0xcb2, 0xD21) };
 		REL::Relocation<std::uintptr_t> resume{ target.address() + 0x7 };
-		REL::Relocation<std::uintptr_t> returnAddr{ base + REL::Relocate<std::uintptr_t>(0xda7, 0xE16)};
+		REL::Relocation<std::uintptr_t> returnAddr{ base + REL::Relocate<std::uintptr_t>(0xda7, 0xE16) };
 
 		const auto instructionBytes = resume.address() - target.address();
 		for (std::size_t i = 0; i < instructionBytes; i++) {
