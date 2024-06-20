@@ -246,7 +246,7 @@ namespace Patches::WorkshopMenuPatch
 			const std::vector<cobj_t> _cobjs = []() {                                      // pre-filter cobjs
 				const auto filters = []() -> std::span<const RE::BGSKeyword*> {
 					if (const auto keywords = RE::BGSKeyword::GetTypedKeywords(); keywords) {
-						auto& filters = (*keywords)[stl::to_underlying(RE::BGSKeyword::KeywordType::kRecipeFilter)];
+						auto& filters = (*keywords)[stl::to_underlying(RE::KeywordType::kRecipeFilter)];
 						return { const_cast<const RE::BGSKeyword**>(filters.data()), filters.size() };
 					} else {
 						return {};

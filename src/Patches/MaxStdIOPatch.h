@@ -4,7 +4,7 @@ namespace Patches::MaxStdIOPatch
 {
 	inline void Install()
 	{
-		const auto handle = GetModuleHandle(L"msvcr110.dll");
+		const auto handle = WinAPI::GetModuleHandle(L"msvcr110.dll");
 		const auto proc =
 			handle ?
 				reinterpret_cast<decltype(&_setmaxstdio)>(WinAPI::GetProcAddress(handle, "_setmaxstdio")) :
