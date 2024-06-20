@@ -38,6 +38,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Crash/CrashHandler.cpp"
 	"${SOURCE_DIR}/Crash/CrashHandler.h"
 	"${SOURCE_DIR}/Fixes/ActorIsHostileToActorFix.h"
+	"${SOURCE_DIR}/Fixes/BSLightingShaderMaterialGlowmapFix.h"
 	"${SOURCE_DIR}/Fixes/CellInitFix.cpp"
 	"${SOURCE_DIR}/Fixes/CellInitFix.h"
 	"${SOURCE_DIR}/Fixes/CreateD3DAndSwapChainFix.cpp"

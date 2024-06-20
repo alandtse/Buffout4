@@ -46,6 +46,7 @@ namespace Settings
 	inline auto a_key = a_type(a_group##sv, #a_key##sv, a_default)
 
 	MAKE_SETTING(bSetting, "Fixes", ActorIsHostileToActor, true);
+	MAKE_SETTING(bSetting, "Fixes", BSLightingShaderMaterialGlowmap, true);
 	MAKE_SETTING(bSetting, "Fixes", CellInit, true);
 	MAKE_SETTING(bSetting, "Fixes", CreateD3DAndSwapChain, true);
 	MAKE_SETTING(bSetting, "Fixes", EncounterZoneReset, true);
@@ -111,6 +112,7 @@ namespace Settings
 	}
 
 		LOAD(ActorIsHostileToActor);
+		LOAD(BSLightingShaderMaterialGlowmap);		
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
 		LOAD(EncounterZoneReset);

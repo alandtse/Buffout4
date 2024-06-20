@@ -1,6 +1,7 @@
 #include "Fixes/Fixes.h"
 
 #include "Fixes/ActorIsHostileToActorFix.h"
+#include "Fixes/BSLightingShaderMaterialGlowmapFix.h"
 #include "Fixes/CellInitFix.h"
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
@@ -21,6 +22,10 @@ namespace Fixes
 	{
 		if (*Settings::ActorIsHostileToActor) {
 			ActorIsHostileToActorFix::Install();
+		}
+
+		if (REL::Module::IsVR() && *Settings::BSLightingShaderMaterialGlowmap) {
+			BSLightingShaderMaterialGlowmapFix::Install();
 		}
 
 		if (*Settings::CellInit) {
