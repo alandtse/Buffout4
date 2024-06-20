@@ -50,6 +50,8 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Fixes", CellInit, true);
 	MAKE_SETTING(bSetting, "Fixes", CreateD3DAndSwapChain, true);
 	MAKE_SETTING(bSetting, "Fixes", EncounterZoneReset, true);
+	MAKE_SETTING(bSetting, "Fixes", FixScriptPageAllocation, true);
+	MAKE_SETTING(bSetting, "Fixes", FixToggleScriptsCommand, true);
 	MAKE_SETTING(bSetting, "Fixes", GreyMovies, true);
 	MAKE_SETTING(bSetting, "Fixes", MagicEffectApplyEvent, true);
 	MAKE_SETTING(bSetting, "Fixes", MovementPlanner, true);
@@ -74,6 +76,8 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Patches", ScaleformAllocator, true);
 	MAKE_SETTING(bSetting, "Patches", SmallBlockAllocator, true);
 	MAKE_SETTING(bSetting, "Patches", WorkshopMenu, true);
+
+	MAKE_SETTING(iSetting, "Tweaks", MaxPapyrusOpsPerFrame, 100);
 
 	MAKE_SETTING(bSetting, "Warnings", CreateTexture2D, true);
 	MAKE_SETTING(bSetting, "Warnings", ImageSpaceAdapter, true);
@@ -116,6 +120,9 @@ namespace Settings
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
 		LOAD(EncounterZoneReset);
+		LOAD(FixScriptPageAllocation);
+		LOAD(FixToggleScriptsCommand);
+
 		LOAD(GreyMovies);
 		LOAD(MagicEffectApplyEvent);
 		LOAD(MovementPlanner);
@@ -140,6 +147,8 @@ namespace Settings
 		LOAD(ScaleformAllocator);
 		LOAD(SmallBlockAllocator);
 		LOAD(WorkshopMenu);
+
+		LOAD(MaxPapyrusOpsPerFrame);
 
 		LOAD(CreateTexture2D);
 		LOAD(ImageSpaceAdapter);

@@ -5,6 +5,8 @@ CellInit = true                      # Fixes a crash where a form does not get c
 CreateD3DAndSwapChain = true         # Fixes a crash on startup when enumerating certain monitor display modes
 EncounterZoneReset = true            # Fixes encounter zones resetting immediately once you leave them on foot
 GreyMovies = true                    # Fixes a bug where movies that don't define "BackgroundAlpha" on their movie root could load with a grey background
+FixScriptPageAllocation = true       # Fix unintentionally allocating script pages when getting largest available page, but out of memory.
+FixToggleScriptsCommand = true       # Fixes ToggleScripts command not persisting when saving/stack dumping. Scripts will now stay turned off when toggled off, and on when toggled on.
 MagicEffectApplyEvent = true         # Fixes a crash when magic effect apply events are dispatched on null references
 MovementPlanner = true               # Fixes a bug where the the movement planner crashes with non-actors
 PackageAllocateLocation = true       # Fixes a crash when allocating the location for a package
@@ -29,6 +31,11 @@ MemoryManagerDebug = false        # Enables debug tracing to determine faulting 
 ScaleformAllocator = true         # Replaces the scaleform memory allocator with os allocators
 SmallBlockAllocator = true        # Replaces the small block memory allocators with os allocators
 WorkshopMenu = true               # Alleviates lag while opening the workshop menu
+
+[Tweaks]
+# Maximum papyrus operations per frame. Higher number means better script performance on average
+# Has a very minor impact on framerate, and varies from script to script. (Default: 500, Vanilla value: 100). Recommended Range: 100-2000.
+MaxPapyrusOpsPerFrame = 500
 
 [Warnings]
 CreateTexture2D = true   # Warns when a call to CreateTexture2D fails

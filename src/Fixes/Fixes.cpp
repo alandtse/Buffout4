@@ -2,6 +2,7 @@
 
 #include "Fixes/ActorIsHostileToActorFix.h"
 #include "Fixes/BSLightingShaderMaterialGlowmapFix.h"
+#include "Fixes/BakaMaxPapyrusOps.h"
 #include "Fixes/CellInitFix.h"
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
@@ -70,6 +71,23 @@ namespace Fixes
 
 		if (REL::Module::IsVR() && *Settings::PipboyLightInvFix) {
 			PipboyLightInvFix::Install();
+		}
+
+		// BakaMaxPapyrusOps
+		// https://github.com/shad0wshayd3-FO4/BakaMaxPapyrusOps
+
+		if (*Settings::FixScriptPageAllocation) {
+			BakaMaxPapyrusOpsFixes::FixScriptPageAllocation::Install();
+		}
+
+		if (*Settings::FixToggleScriptsCommand) {
+			BakaMaxPapyrusOpsFixes::FixToggleScriptsCommand::Install();
+		}
+
+		if (*Settings::MaxPapyrusOpsPerFrame > 0) {
+			BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Update(*Settings::MaxPapyrusOpsPerFrame);
+			BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Install();
+			logger::info("MaxPapyrusOpsPerFrame set to {}", *Settings::MaxPapyrusOpsPerFrame);
 		}
 	}
 

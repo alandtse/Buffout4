@@ -44,6 +44,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/CreateD3DAndSwapChainFix.cpp"
 	"${SOURCE_DIR}/Fixes/CreateD3DAndSwapChainFix.h"
 	"${SOURCE_DIR}/Fixes/EncounterZoneResetFix.h"
+	"${SOURCE_DIR}/Fixes/BakaMaxPapyrusOps.h"
 	"${SOURCE_DIR}/Fixes/Fixes.cpp"
 	"${SOURCE_DIR}/Fixes/Fixes.h"
 	"${SOURCE_DIR}/Fixes/GreyMoviesFix.h"
