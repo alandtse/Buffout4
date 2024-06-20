@@ -22,14 +22,12 @@ public:
 
 			auto maxPageSize = a_this->maxAllocatedMemory - a_this->currentMemorySize;
 			auto currentMemorySize = a_this->currentMemorySize;
-			if (maxPageSize < 0)
-			{
+			if (maxPageSize < 0) {
 				a_this->currentMemorySize = a_this->maxAllocatedMemory;
 			}
 
 			auto result = _GetLargestAvailablePage(a_this, a_newPage);
-			if (maxPageSize < 0)
-			{
+			if (maxPageSize < 0) {
 				a_this->currentMemorySize = currentMemorySize;
 			}
 
@@ -57,7 +55,7 @@ public:
 			}
 
 			{
-				static REL::Relocation<std::uintptr_t> target{ REL::ID(124452), REL::Relocate(0x32F, 0x347)}; // VR 0x347
+				static REL::Relocation<std::uintptr_t> target{ REL::ID(124452), REL::Relocate(0x32F, 0x347) };  // VR 0x347
 				auto& trampoline = F4SE::GetTrampoline();
 				trampoline.write_call<5>(target.address(), EndSaveLoad);
 			}
@@ -79,8 +77,7 @@ public:
 	private:
 		static void EndSaveLoad(RE::GameVM* a_this)
 		{
-			if (a_this->saveLoadInterface)
-			{
+			if (a_this->saveLoadInterface) {
 				a_this->saveLoadInterface->CleanupLoad();
 				a_this->saveLoadInterface->CleanupSave();
 			}
@@ -92,8 +89,7 @@ public:
 			a_this->objectBindPolicy.EndSaveLoad();
 			a_this->handlePolicy.UpdatePersistence();
 
-			if (RE::Script::GetProcessScripts())
-			{
+			if (RE::Script::GetProcessScripts()) {
 				const RE::BSAutoLock lock{ a_this->freezeLock };
 				a_this->frozen = false;
 			}
@@ -101,8 +97,7 @@ public:
 
 		static void Freeze(RE::GameVM* a_this, bool a_freeze)
 		{
-			if (RE::Script::GetProcessScripts())
-			{
+			if (RE::Script::GetProcessScripts()) {
 				return _Freeze(a_this, a_freeze);
 			}
 		}
@@ -147,13 +142,13 @@ public:
 			logger::info("Installed MaxPapyrusOpsPerFrame {0:x}"sv, target.address());
 		}
 
-		template<typename T>
+		template <typename T>
 		static void Update(T a_value)
 		{
 			MaxOpsPerFrame = static_cast<std::int32_t>(a_value);
 		}
 
 	private:
-		inline static std::int32_t MaxOpsPerFrame{ 100 }; // vanilla is 100
+		inline static std::int32_t MaxOpsPerFrame{ 100 };  // vanilla is 100
 	};
 };
