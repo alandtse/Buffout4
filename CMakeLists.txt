@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 set(NAME "Buffout4")
-set(VERSION 1.31.1)
+set(VERSION 1.32.0)
 
 project(
 	${NAME}
