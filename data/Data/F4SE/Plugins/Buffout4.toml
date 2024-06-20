@@ -12,7 +12,7 @@ TESObjectREFRGetEncounterZone = true # Fixes a crash when looking up the encount
 UnalignedLoad = true                 # Fixes a crash related to SIMD intrinsics with an aligned move on unaligned memory
 UtilityShader = true                 # Fixes a crash when a shader can't be found for a given technique id
 WorkBenchSwap = true                 # Fixes a crash where you are scrapping or swapping many inventory items in the workbench
-PipboyLightInvFix = false             # Fixes a crash when you have the pipboy light on and checking inventory
+PipboyLightInvFix = true             # Fixes a crash when you have the pipboy light on and checking inventory
 
 [Patches]
 Achievements = true               # Enables achievements on modded saves
