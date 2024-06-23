@@ -75,19 +75,23 @@ namespace Fixes
 
 		// BakaMaxPapyrusOps
 		// https://github.com/shad0wshayd3-FO4/BakaMaxPapyrusOps
+#undef GetModuleHandle
+		if (WinAPI::GetModuleHandle(L"BakaMaxPapyrusOps.dll")) {
+			logger::info("Detected BakaMaxPapyusOps, disabling redundant fixes/tweaks.");
+		} else {
+			if (*Settings::FixScriptPageAllocation) {
+				BakaMaxPapyrusOpsFixes::FixScriptPageAllocation::Install();
+			}
 
-		if (*Settings::FixScriptPageAllocation) {
-			BakaMaxPapyrusOpsFixes::FixScriptPageAllocation::Install();
-		}
+			if (*Settings::FixToggleScriptsCommand) {
+				BakaMaxPapyrusOpsFixes::FixToggleScriptsCommand::Install();
+			}
 
-		if (*Settings::FixToggleScriptsCommand) {
-			BakaMaxPapyrusOpsFixes::FixToggleScriptsCommand::Install();
-		}
-
-		if (*Settings::MaxPapyrusOpsPerFrame > 0) {
-			BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Update(*Settings::MaxPapyrusOpsPerFrame);
-			BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Install();
-			logger::info("MaxPapyrusOpsPerFrame set to {}", *Settings::MaxPapyrusOpsPerFrame);
+			if (*Settings::MaxPapyrusOpsPerFrame > 0) {
+				BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Update(*Settings::MaxPapyrusOpsPerFrame);
+				BakaMaxPapyrusOpsTweaks::MaxPapyrusOpsPerFrame::Install();
+				logger::info("MaxPapyrusOpsPerFrame set to {}", *Settings::MaxPapyrusOpsPerFrame);
+			}
 		}
 	}
 
