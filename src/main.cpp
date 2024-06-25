@@ -229,9 +229,7 @@ namespace
 				Crash::Install();
 				Fixes::PreLoad();
 				Patches::PreLoad();
-				if (REL::Module::IsF4()) {
-					Warnings::PreLoad();
-				}
+				Warnings::PreLoad();
 			};
 
 			std::vector<std::uintptr_t> cache(a_first, a_last);

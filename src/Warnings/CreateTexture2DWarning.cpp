@@ -83,7 +83,7 @@ namespace Warnings::CreateTexture2DWarning
 
 	void Install()
 	{
-		{
+		{  // BSD3DResourceCreator::ThreadProc; case 3
 			struct Patch :
 				Xbyak::CodeGenerator
 			{
@@ -95,11 +95,27 @@ namespace Warnings::CreateTexture2DWarning
 				}
 			};
 
-			REL::Relocation<std::uintptr_t> target{ REL::ID(678241), 0x147 };
+			REL::Relocation<std::uintptr_t> target{ REL::ID(678241), 0x147 };  // Missing in VR, instead calls CreateTextureRequested
+			if (REL::Module::IsF4())
+				WritePatch<Patch>(target.address(), 0x7);
+		}
+
+		{  // BSD3DResourceCreator::CreateTextureRequested
+			struct Patch :
+				Xbyak::CodeGenerator
+			{
+				Patch(std::uintptr_t a_dst)
+				{
+					lea(r9, ptr[rdi + 0x8]);
+					mov(rax, a_dst);
+					jmp(rax);
+				}
+			};
+			REL::Relocation<std::uintptr_t> target{ REL::ID(1165600), REL::Relocate(0x4c, 0x5f) };
 			WritePatch<Patch>(target.address(), 0x7);
 		}
 
-		{
+		{  // BSD3DResourceCreator::CreateDeferredTextureCopyRequested
 			struct Patch :
 				Xbyak::CodeGenerator
 			{
@@ -111,7 +127,7 @@ namespace Warnings::CreateTexture2DWarning
 				}
 			};
 
-			REL::Relocation<std::uintptr_t> target{ REL::ID(367479), 0xAA };
+			REL::Relocation<std::uintptr_t> target{ REL::ID(367479), REL::Relocate(0xAA, 0xbf) };
 			WritePatch<Patch>(target.address(), 0x8);
 		}
 
