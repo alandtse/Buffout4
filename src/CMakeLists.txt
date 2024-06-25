@@ -48,6 +48,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/Fixes.cpp"
 	"${SOURCE_DIR}/Fixes/Fixes.h"
 	"${SOURCE_DIR}/Fixes/GreyMoviesFix.h"
+	"${SOURCE_DIR}/Fixes/InteriorNavCutFix.h"
 	"${SOURCE_DIR}/Fixes/MagicEffectApplyEventFix.h"
 	"${SOURCE_DIR}/Fixes/MovementPlannerFix.h"
 	"${SOURCE_DIR}/Fixes/PackageAllocateLocationFix.h"

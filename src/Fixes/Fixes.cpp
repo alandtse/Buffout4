@@ -7,6 +7,7 @@
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
 #include "Fixes/GreyMoviesFix.h"
+#include "Fixes/InteriorNavCutFix.h"
 #include "Fixes/MagicEffectApplyEventFix.h"
 #include "Fixes/MovementPlannerFix.h"
 #include "Fixes/PackageAllocateLocationFix.h"
@@ -103,6 +104,32 @@ namespace Fixes
 
 		if (REL::Module::IsF4() && *Settings::UtilityShader) {
 			UtilityShaderFix::Install();
+		}
+	}
+
+	void PostLoadGame()
+	{
+		if (*Settings::InteriorNavCut) {
+			if (WinAPI::GetModuleHandle(L"Interior-NavCut-Fix.dll")) {
+				logger::info("Detected Interior-NavCut-Fix, disabling redundant fixes.");
+			} else if (REL::Module::IsVR() && F4SE::GetF4SEVersion() < REL::Version{ 0, 6, 21, 0 } && !WinAPI::GetModuleHandle(L"f4ee.dll")) {
+				// This check is necessary to fix a bug in F4SEVR 0.6.20.0 where GameDataReady will not fire.
+				logger::warn("LooksMenu VR f4ee.dll not detected for F4SEVR 0.6.20.0; Upgrade to 0.6.21.0 or please install https://github.com/peteben/F4SEPlugins/releases. LooksMenu.esp from original is optional for this fix.");
+			} else {
+				InteriorNavCutFix::ForceNavMeshUpdate();
+			}
+		}
+	}
+
+	void GameDataReady()
+	{
+		// VR requires F4SEVR 0.6.21 and newer to fire (or f4ee.dll VR) to fire
+		if (*Settings::InteriorNavCut) {
+			if (WinAPI::GetModuleHandle(L"Interior-NavCut-Fix.dll")) {
+				logger::info("Detected Interior-NavCut-Fix, disabling redundant fixes.");
+			} else {
+				InteriorNavCutFix::RegisterNavMeshUpdateListener();
+			}
 		}
 	}
 }

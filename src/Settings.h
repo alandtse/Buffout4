@@ -53,6 +53,7 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Fixes", FixScriptPageAllocation, true);
 	MAKE_SETTING(bSetting, "Fixes", FixToggleScriptsCommand, true);
 	MAKE_SETTING(bSetting, "Fixes", GreyMovies, true);
+	MAKE_SETTING(bSetting, "Fixes", InteriorNavCut, true);
 	MAKE_SETTING(bSetting, "Fixes", MagicEffectApplyEvent, true);
 	MAKE_SETTING(bSetting, "Fixes", MovementPlanner, true);
 	MAKE_SETTING(bSetting, "Fixes", PackageAllocateLocation, true);
@@ -124,6 +125,7 @@ namespace Settings
 		LOAD(FixToggleScriptsCommand);
 
 		LOAD(GreyMovies);
+		LOAD(InteriorNavCut);
 		LOAD(MagicEffectApplyEvent);
 		LOAD(MovementPlanner);
 		LOAD(PackageAllocateLocation);

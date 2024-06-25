@@ -35,10 +35,20 @@ namespace
 				Compatibility::Install();
 			}
 			break;
+		case F4SE::MessagingInterface::kPostLoadGame:
+			{
+				Fixes::PostLoadGame();
+				break;
+			}
 		case F4SE::MessagingInterface::kGameLoaded:
 			{
 				static std::once_flag guard;
 				std::call_once(guard, PostInit);
+			}
+			break;
+		case F4SE::MessagingInterface::kGameDataReady:
+			{
+				Fixes::GameDataReady();
 			}
 			break;
 		}
