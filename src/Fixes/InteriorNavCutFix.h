@@ -1,6 +1,6 @@
 // Based off MIT code from https://github.com/Deweh/EngineFixesF4/tree/master/EngineFixesF4/src
 // used in Interior NavCut Fix https://www.nexusmods.com/fallout4/mods/72904?tab=description
-// Fixes the engine bug that causes workshop navmesh cuts to persist throughout all interior cells. 
+// Fixes the engine bug that causes workshop navmesh cuts to persist throughout all interior cells.
 // https://simsettlements.com/site/index.php?threads/major-new-fallout-4-bug-discovered-shared-interior-cell-navcutting.26755/
 #ifndef NO_PPL
 #	include <ppl.h>
