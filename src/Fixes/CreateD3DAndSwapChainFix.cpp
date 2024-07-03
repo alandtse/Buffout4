@@ -29,7 +29,7 @@ namespace CreateD3DAndSwapChainFix
 
 	void Install()
 	{
-		const auto target = REL::Relocation<std::uintptr_t>(REL::ID(224250), REL::Relocate(0x114,0x114, 0x11F)).address();
+		const auto target = REL::Relocation<std::uintptr_t>(REL::ID(224250), REL::Relocate(0x114, 0x114, 0x11F)).address();
 		auto& trampoline = F4SE::GetTrampoline();
 		trampoline.write_call<5>(target, detail::GetDisplayModeList);
 
