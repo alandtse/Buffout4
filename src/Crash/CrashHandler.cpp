@@ -236,7 +236,7 @@ namespace Crash
 					std::filesystem::path pluginDir{ Crash::PDB::sPluginPath };
 					std::filesystem::path filename = pluginDir.append(m);
 					if (std::filesystem::exists(filename))
-						plugins.emplace_back(*std::move(std::make_optional(m)), REL::get_file_version(filename.wstring()));
+						plugins.emplace_back(*std::move(std::make_optional(m)), REL::GetFileVersion(filename.wstring()));
 				} catch (const std::exception& e) {
 					a_log.critical("Skipping module {}:{}"sv, m, e.what());
 				}
@@ -562,7 +562,7 @@ namespace Crash
 				print([&]() { print_plugins(*log); }, "print_plugins");
 			} catch (...) {}
 
-			::WinAPI::TerminateProcess(::WinAPI::GetCurrentProcess(), EXIT_FAILURE);
+			REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), EXIT_FAILURE);
 			return 1;
 		}
 

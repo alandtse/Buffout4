@@ -50,9 +50,7 @@
 
 namespace WinAPI
 {
-	using namespace F4SE::WinAPI;
-
-	inline constexpr auto(EXCEPTION_EXECUTE_HANDLER){ static_cast<int>(1) };
+	//inline constexpr auto(EXCEPTION_EXECUTE_HANDLER){ static_cast<int>(1) };
 
 	inline constexpr auto UNDNAME_NO_MS_KEYWORDS = std::uint32_t{ 0x0002 };
 	inline constexpr auto UNDNAME_NO_FUNCTION_RETURNS = std::uint32_t{ 0x0004 };
@@ -85,7 +83,6 @@ namespace stl
 	using F4SE::stl::enumeration;
 	using F4SE::stl::report_and_fail;
 	using F4SE::stl::scope_exit;
-	using F4SE::stl::to_underlying;
 
 	void asm_jump(std::uintptr_t a_from, std::size_t a_size, std::uintptr_t a_to);
 

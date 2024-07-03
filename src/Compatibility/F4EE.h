@@ -1,7 +1,8 @@
 #pragma once
 
 #include "hash.h"
-#include <F4SE/Impl/WinAPI.h>
+#undef min
+#undef max
 
 namespace Compatibility::F4EE
 {
@@ -19,7 +20,7 @@ namespace Compatibility::F4EE
 
 		inline RE::BSTArray<float>* CreateMorphs()
 		{
-			return new RE::BSTArray<float>(5, 0.0F);
+			return new RE::BSTArray<float>{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 		}
 
 		void SimpleInlinePatch(std::uintptr_t a_dst, std::size_t a_size, std::uintptr_t a_func);
@@ -50,7 +51,7 @@ namespace Compatibility::F4EE
 			return false;
 		};
 
-		const auto handle = WinAPI::GetModuleHandle(L"f4ee.dll");
+		const auto handle = REX::W32::GetModuleHandleW(L"f4ee.dll");
 		if (handle != nullptr && validate()) {
 			const auto base = reinterpret_cast<std::uintptr_t>(handle);
 			detail::SetMorphValues(base);

@@ -64,7 +64,7 @@ namespace
 			stl::report_and_fail("Failed to find standard logging directory"sv);
 		}
 
-		*path /= fmt::format("{}.log"sv, Plugin::NAME);
+		*path /= fmt::format("{}.log"sv, "Buffout4"sv);
 		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
 #endif
 
@@ -79,16 +79,8 @@ namespace
 		log->flush_on(level);
 
 		spdlog::set_default_logger(std::move(log));
-		spdlog::set_pattern("[%Y-%m-%d %H-%M-%S.%e][%-16s:%-4#][%=7l]: %v"s);
+		spdlog::set_pattern("[%Y-%m-%d %T.%e][%-16s:%-4#][%L]: %v"s);
 
-		logger::info(
-			"{} v{}.{}.{} {} {}"sv,
-			Plugin::NAME,
-			Plugin::VERSION[0],
-			Plugin::VERSION[1],
-			Plugin::VERSION[2],
-			__DATE__,
-			__TIME__);
 	}
 }
 
@@ -112,7 +104,6 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Query(const F4SE::QueryInterface* a
 		logger::critical("unsupported runtime v{}"sv, ver.string());
 		return false;
 	}
-
 	return true;
 }
 
@@ -120,7 +111,7 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f
 {
 	AllocTrampoline();
 	F4SE::Init(a_f4se);
-
+	spdlog::set_pattern("[%Y-%m-%d %T.%e][%-16s:%-4#][%L]: %v"s);
 	logger::info("NOTE: This is not a crashlog. Crashlogs have the name crash-[TIMESTAMP].log");
 	logger::info("Buffout 4 v{}.{}.{} {} {} is loading"sv, Plugin::VERSION[0], Plugin::VERSION[1], Plugin::VERSION[2], __DATE__, __TIME__);
 	const auto messaging = F4SE::GetMessagingInterface();
@@ -130,6 +121,21 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f
 
 	return true;
 }
+
+F4SE_EXPORT constinit auto F4SEPlugin_Version = []() noexcept {
+	F4SE::PluginVersionData data{};
+
+	data.PluginName(Plugin::NAME.data());
+	data.PluginVersion(Plugin::VERSION);
+	data.AuthorName("alandtse");
+	data.UsesAddressLibrary(true);
+	data.UsesSigScanning(false);
+	data.IsLayoutDependent(true);
+	data.HasNoStructUse(false);
+	data.CompatibleVersions({ F4SE::RUNTIME_LATEST, F4SE::RUNTIME_LATEST_VR });
+
+	return data;
+}();
 
 #define WIN32_LEAN_AND_MEAN
 

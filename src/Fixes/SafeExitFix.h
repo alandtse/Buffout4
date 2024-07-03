@@ -6,7 +6,7 @@ namespace Fixes::SafeExitFix
 	{
 		inline void Shutdown()
 		{
-			WinAPI::TerminateProcess(WinAPI::GetCurrentProcess(), EXIT_SUCCESS);
+			REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), EXIT_SUCCESS);
 		}
 	}
 

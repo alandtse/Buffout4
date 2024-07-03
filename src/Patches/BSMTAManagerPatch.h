@@ -132,7 +132,7 @@ namespace Patches::BSMTAManagerPatch
 		}
 
 		{
-			const auto target = REL::Relocation<std::uintptr_t>(REL::ID(485563), REL::VariantOffset(0x8E, 0x7E)).address();
+			const auto target = REL::Relocation<std::uintptr_t>(REL::ID(485563), REL::Relocate(0x8E, 0x8e, 0x7E)).address();
 			stl::write_thunk_call<5, detail::Submit>(target);
 		}
 

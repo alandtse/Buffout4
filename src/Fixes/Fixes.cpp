@@ -76,8 +76,7 @@ namespace Fixes
 
 		// BakaMaxPapyrusOps
 		// https://github.com/shad0wshayd3-FO4/BakaMaxPapyrusOps
-#undef GetModuleHandle
-		if (WinAPI::GetModuleHandle(L"BakaMaxPapyrusOps.dll")) {
+		if (REX::W32::GetModuleHandleW(L"BakaMaxPapyrusOps.dll")) {
 			logger::info("Detected BakaMaxPapyusOps, disabling redundant fixes/tweaks.");
 		} else {
 			if (*Settings::FixScriptPageAllocation) {
@@ -110,9 +109,9 @@ namespace Fixes
 	void PostLoadGame()
 	{
 		if (*Settings::InteriorNavCut) {
-			if (WinAPI::GetModuleHandle(L"Interior-NavCut-Fix.dll")) {
+			if (REX::W32::GetModuleHandleW(L"Interior-NavCut-Fix.dll")) {
 				logger::info("Detected Interior-NavCut-Fix, disabling redundant fixes.");
-			} else if (REL::Module::IsVR() && F4SE::GetF4SEVersion() < REL::Version{ 0, 6, 21, 0 } && !WinAPI::GetModuleHandle(L"f4ee.dll")) {
+			} else if (REL::Module::IsVR() && F4SE::GetF4SEVersion() < REL::Version{ 0, 6, 21, 0 } && !REX::W32::GetModuleHandleW(L"f4ee.dll")) {
 				// This check is necessary to fix a bug in F4SEVR 0.6.20.0 where GameDataReady will not fire.
 				logger::warn("LooksMenu VR f4ee.dll not detected for F4SEVR 0.6.20.0; Upgrade to 0.6.21.0 or please install https://github.com/peteben/F4SEPlugins/releases. LooksMenu.esp from original is optional for this fix.");
 			} else {
@@ -125,7 +124,7 @@ namespace Fixes
 	{
 		// VR requires F4SEVR 0.6.21 and newer to fire (or f4ee.dll VR) to fire
 		if (*Settings::InteriorNavCut) {
-			if (WinAPI::GetModuleHandle(L"Interior-NavCut-Fix.dll")) {
+			if (REX::W32::GetModuleHandleW(L"Interior-NavCut-Fix.dll")) {
 				logger::info("Detected Interior-NavCut-Fix, disabling redundant fixes.");
 			} else {
 				InteriorNavCutFix::RegisterNavMeshUpdateListener();

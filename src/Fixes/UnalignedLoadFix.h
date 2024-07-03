@@ -6,7 +6,7 @@ namespace Fixes::UnalignedLoadFix
 	{
 		inline void ApplySkinningToGeometry()
 		{
-			REL::Relocation<std::uintptr_t> target{ REL::ID(44611), REL::VariantOffset(0x172, 0x179) };
+			REL::Relocation<std::uintptr_t> target{ REL::ID(44611), REL::Relocate(0x172, 0x172, 0x179) };
 			REL::safe_write(target.address() + 0x2, std::uint32_t{ 0x10 });
 			logger::debug("ApplySkinningToGeometry: writing to {:x}"sv, target.address() + 0x2);
 		}

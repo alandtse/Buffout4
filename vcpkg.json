@@ -13,9 +13,7 @@
     "frozen",
     {
       "name": "infoware",
-      "features": [
-        "d3d"
-      ]
+      "features": ["d3d"]
     },
     "magic-enum",
     "nowide",

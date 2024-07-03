@@ -182,7 +182,7 @@ namespace Crash::Modules
 			}
 
 		private:
-			REL::IDDatabase::Offset2ID _offset2ID{ std::execution::par_unseq };
+			REL::Offset2ID _offset2ID{ std::execution::par_unseq };
 		};
 
 		class Factory

@@ -476,19 +476,19 @@ namespace Crash::Introspection::F4
 				const auto formFlags = form->flags;
 				a_results.emplace_back(
 					fmt::format(
-						"{:\t>{}}Flags"sv,
+						fmt::runtime("{:\t>{}}Flags"),
 						""sv,
 						tab_depth),
 					fmt::format(
-						"0x{:08X}"sv,
-						formFlags));
+						fmt::runtime("0x{:08X}"),
+						formFlags.underlying()));
 			} catch (...) {}
 			try {
 				const auto name = form->name.c_str();
 				if (name && name[0])
 					a_results.emplace_back(
 						fmt::format(
-							"{:\t>{}}Name"sv,
+							fmt::runtime("{:\t>{}}Name"),
 							""sv,
 							tab_depth),
 						quoted(name));
@@ -594,7 +594,7 @@ namespace Crash::Introspection::F4
 			try {
 				a_results.emplace_back(
 					fmt::format(
-						"{:\t>{}}Already Run Quest"sv,
+						fmt::runtime("{:\t>{}}Already Run Quest"),
 						"",
 						tab_depth),
 					fmt::format(
@@ -602,7 +602,7 @@ namespace Crash::Introspection::F4
 						object->alreadyRun));
 				a_results.emplace_back(
 					fmt::format(
-						"{:\t>{}}Current Stage"sv,
+						fmt::runtime("{:\t>{}}Current Stage"),
 						"",
 						tab_depth),
 					fmt::format(

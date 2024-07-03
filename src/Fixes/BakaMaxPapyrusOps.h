@@ -55,7 +55,7 @@ public:
 			}
 
 			{
-				static REL::Relocation<std::uintptr_t> target{ REL::ID(124452), REL::Relocate(0x32F, 0x347) };  // VR 0x347
+				static REL::Relocation<std::uintptr_t> target{ REL::ID(124452), REL::Relocate(0x32F, 0x32F, 0x347) };  // VR 0x347
 				auto& trampoline = F4SE::GetTrampoline();
 				trampoline.write_call<5>(target.address(), EndSaveLoad);
 			}
