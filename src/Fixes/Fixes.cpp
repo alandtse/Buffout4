@@ -2,6 +2,7 @@
 
 #include "Fixes/ActorIsHostileToActorFix.h"
 #include "Fixes/BSLightingShaderMaterialGlowmapFix.h"
+#include "Fixes/BackportedBA2Support.h"
 #include "Fixes/BakaMaxPapyrusOps.h"
 #include "Fixes/CellInitFix.h"
 #include "Fixes/CreateD3DAndSwapChainFix.h"
@@ -24,6 +25,12 @@ namespace Fixes
 	{
 		if (*Settings::ActorIsHostileToActor) {
 			ActorIsHostileToActorFix::Install();
+		}
+
+		// BackportedBA2Support
+		// https://www.nexusmods.com/fallout4/mods/81859
+		if (REL::Module::IsVR() && *Settings::BackportedBA2Support) {
+			BackportedBA2Support::Install();
 		}
 
 		if (REL::Module::IsVR() && *Settings::BSLightingShaderMaterialGlowmap) {

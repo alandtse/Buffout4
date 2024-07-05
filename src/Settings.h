@@ -46,6 +46,7 @@ namespace Settings
 	inline auto a_key = a_type(a_group##sv, #a_key##sv, a_default)
 
 	MAKE_SETTING(bSetting, "Fixes", ActorIsHostileToActor, true);
+	MAKE_SETTING(bSetting, "Fixes", BackportedBA2Support, true);
 	MAKE_SETTING(bSetting, "Fixes", BSLightingShaderMaterialGlowmap, true);
 	MAKE_SETTING(bSetting, "Fixes", CellInit, true);
 	MAKE_SETTING(bSetting, "Fixes", CreateD3DAndSwapChain, true);
@@ -117,6 +118,7 @@ namespace Settings
 	}
 
 		LOAD(ActorIsHostileToActor);
+		LOAD(BackportedBA2Support);
 		LOAD(BSLightingShaderMaterialGlowmap);
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
