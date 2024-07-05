@@ -1,22 +1,22 @@
 [Fixes]
-ActorIsHostileToActor = true         # Fixes a crash when invoking Actor.IsHostileToActor with a none form
+ActorIsHostileToActor = true           # Fixes a crash when invoking Actor.IsHostileToActor with a none form
 BSLightingShaderMaterialGlowmap = true #Fixes a crash with a bad BSLightingShaderMaterialGlowmap
-CellInit = true                      # Fixes a crash where a form does not get converted to a form pointer on unloaded cells
-CreateD3DAndSwapChain = true         # Fixes a crash on startup when enumerating certain monitor display modes
-EncounterZoneReset = true            # Fixes encounter zones resetting immediately once you leave them on foot
-GreyMovies = true                    # Fixes a bug where movies that don't define "BackgroundAlpha" on their movie root could load with a grey background
-InteriorNavCutFix = true             # Fixes the engine bug that causes workshop navmesh cuts to persist throughout all interior cells. https://simsettlements.com/site/index.php?threads/major-new-fallout-4-bug-discovered-shared-interior-cell-navcutting.26755/
-FixScriptPageAllocation = true       # Fix unintentionally allocating script pages when getting largest available page, but out of memory.
-FixToggleScriptsCommand = true       # Fixes ToggleScripts command not persisting when saving/stack dumping. Scripts will now stay turned off when toggled off, and on when toggled on.
-MagicEffectApplyEvent = true         # Fixes a crash when magic effect apply events are dispatched on null references
-MovementPlanner = true               # Fixes a bug where the the movement planner crashes with non-actors
-PackageAllocateLocation = true       # Fixes a crash when allocating the location for a package
-SafeExit = true                      # Fixes crashes related to exiting the game that can be caused erroneously by F4SE plugin hooks
-TESObjectREFRGetEncounterZone = true # Fixes a crash when looking up the encounter zone on a reference that has not yet initialized
-UnalignedLoad = true                 # Fixes a crash related to SIMD intrinsics with an aligned move on unaligned memory
-UtilityShader = true                 # Fixes a crash when a shader can't be found for a given technique id
-WorkBenchSwap = true                 # Fixes a crash where you are scrapping or swapping many inventory items in the workbench
-PipboyLightInvFix = true             # Fixes a crash when you have the pipboy light on and checking inventory
+CellInit = true                        # Fixes a crash where a form does not get converted to a form pointer on unloaded cells
+CreateD3DAndSwapChain = true           # Fixes a crash on startup when enumerating certain monitor display modes
+EncounterZoneReset = true              # Fixes encounter zones resetting immediately once you leave them on foot
+GreyMovies = true                      # Fixes a bug where movies that don't define "BackgroundAlpha" on their movie root could load with a grey background
+InteriorNavCutFix = true               # Fixes the engine bug that causes workshop navmesh cuts to persist throughout all interior cells. https://simsettlements.com/site/index.php?threads/major-new-fallout-4-bug-discovered-shared-interior-cell-navcutting.26755/
+FixScriptPageAllocation = true         # Fix unintentionally allocating script pages when getting largest available page, but out of memory.
+FixToggleScriptsCommand = true         # Fixes ToggleScripts command not persisting when saving/stack dumping. Scripts will now stay turned off when toggled off, and on when toggled on.
+MagicEffectApplyEvent = true           # Fixes a crash when magic effect apply events are dispatched on null references
+MovementPlanner = true                 # Fixes a bug where the the movement planner crashes with non-actors
+PackageAllocateLocation = true         # Fixes a crash when allocating the location for a package
+SafeExit = true                        # Fixes crashes related to exiting the game that can be caused erroneously by F4SE plugin hooks
+TESObjectREFRGetEncounterZone = true   # Fixes a crash when looking up the encounter zone on a reference that has not yet initialized
+UnalignedLoad = true                   # Fixes a crash related to SIMD intrinsics with an aligned move on unaligned memory
+UtilityShader = true                   # Fixes a crash when a shader can't be found for a given technique id
+WorkBenchSwap = true                   # Fixes a crash where you are scrapping or swapping many inventory items in the workbench
+PipboyLightInvFix = true               # Fixes a crash when you have the pipboy light on and checking inventory
 
 [Patches]
 Achievements = true               # Enables achievements on modded saves
