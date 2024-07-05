@@ -4,7 +4,7 @@ namespace Fixes::UtilityShaderFix
 {
 	namespace detail
 	{
-		inline void CreateShaders() // inlined in NG to 141cd3017
+		inline void CreateShaders()  // inlined in NG to 141cd3017
 		{
 			REL::Relocation<void()> func{ REL::ID(527640) };
 			func();

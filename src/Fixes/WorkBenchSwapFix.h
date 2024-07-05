@@ -25,7 +25,7 @@ namespace Fixes::WorkBenchSwapFix
 
 	inline void Install()
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::RelocationID(1573164, 2267897), 0x48 }; // identical in all versions
+		REL::Relocation<std::uintptr_t> target{ REL::RelocationID(1573164, 2267897), 0x48 };  // identical in all versions
 		REL::Relocation<std::uintptr_t> resume{ REL::RelocationID(1573164, 2267897), 0x4D };
 
 		detail::Patch p{ resume.address() };

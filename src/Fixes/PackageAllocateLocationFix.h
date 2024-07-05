@@ -17,7 +17,7 @@ namespace Fixes::PackageAllocateLocationFix
 
 	inline void Install()
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::ID(1248203), 0x141 }; // NG is lacking entirely
+		REL::Relocation<std::uintptr_t> target{ REL::ID(1248203), 0x141 };  // NG is lacking entirely
 		stl::write_thunk_call<5, detail::GetPrimitive>(target.address());
 		logger::info("installed PackageAllocateLocation fix"sv);
 	}

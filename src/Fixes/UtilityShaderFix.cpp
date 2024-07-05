@@ -66,7 +66,7 @@ namespace Fixes::UtilityShaderFix::detail
 		{
 			Patch(std::uintptr_t a_data)
 			{
-				mov(rax, a_data); // VR calls a function? maybe need to set r12
+				mov(rax, a_data);  // VR calls a function? maybe need to set r12
 				ret();
 			}
 		};
@@ -75,7 +75,7 @@ namespace Fixes::UtilityShaderFix::detail
 		assert(*shader != nullptr);
 		Patch p{ reinterpret_cast<std::uintptr_t>(*shader) };
 		p.ready();
-		WritePatch(a_base, 0x1A4, 0x1AB, p); // VR 0xf5, 0xfa but logic is very different in VR
+		WritePatch(a_base, 0x1A4, 0x1AB, p);  // VR 0xf5, 0xfa but logic is very different in VR
 	}
 
 	void PatchVertexShader(std::uintptr_t a_base)
@@ -85,7 +85,7 @@ namespace Fixes::UtilityShaderFix::detail
 		{
 			Patch(std::uintptr_t a_data)
 			{
-				mov(r13, a_data); // VR RSI, NG RAX
+				mov(r13, a_data);  // VR RSI, NG RAX
 				ret();
 			}
 		};
@@ -94,7 +94,7 @@ namespace Fixes::UtilityShaderFix::detail
 		assert(*shader != nullptr);
 		Patch p{ reinterpret_cast<std::uintptr_t>(*shader) };
 		p.ready();
-		WritePatch(a_base, 0x150, 0x157, p); // VR a7, aa (not enough space for write_call<6>). Also appears opposite order as flat
-		// NG also appears to lack space for write_call.
+		WritePatch(a_base, 0x150, 0x157, p);  // VR a7, aa (not enough space for write_call<6>). Also appears opposite order as flat
+											  // NG also appears to lack space for write_call.
 	}
 }

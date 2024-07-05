@@ -94,8 +94,8 @@ namespace Patches::BSMTAManagerPatch
 			Cache() noexcept = default;
 			~Cache() noexcept = default;
 
-			ExecuteTask_t* const _executeTask{ reinterpret_cast<ExecuteTask_t*>(REL::ID(92771).address()) }; //inlined in NG and VR.
-			// in both, essentially virtual function on BSShaderAccumulator*_BSMTAManager::pAccumulator + 160/168 VR/NG respectively
+			ExecuteTask_t* const _executeTask{ reinterpret_cast<ExecuteTask_t*>(REL::ID(92771).address()) };  //inlined in NG and VR.
+																											  // in both, essentially virtual function on BSShaderAccumulator*_BSMTAManager::pAccumulator + 160/168 VR/NG respectively
 		};
 
 		inline void RegisterObjects(RE::BSMTAManager::JobData& a_jobData)

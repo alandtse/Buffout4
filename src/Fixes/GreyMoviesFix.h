@@ -17,9 +17,9 @@ namespace Fixes::GreyMoviesFix
 
 	inline void Install()
 	{
-		const REL::Relocation<std::uintptr_t> target{ REL::RelocationID(1526234, 2287422), REL::VariantOffset(0x216, 0x2a7, 0x216) }; 
+		const REL::Relocation<std::uintptr_t> target{ REL::RelocationID(1526234, 2287422), REL::VariantOffset(0x216, 0x2a7, 0x216) };
 		// NG has a different 2 byte call at this location so patch must be rewritten
-		// perhaps the original call at +0x26e can be replaced instead 
+		// perhaps the original call at +0x26e can be replaced instead
 		// Scaleform::GFx::Movie::GetVariable((Movie *)this_00,(Value *)&local_1e8,"BackgroundAlpha");
 		auto& trampoline = F4SE::GetTrampoline();
 		trampoline.write_call<6>(target.address(), detail::SetBackgroundAlpha);
