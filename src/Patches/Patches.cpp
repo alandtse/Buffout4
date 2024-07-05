@@ -21,7 +21,7 @@ namespace Patches
 			AchievementsPatch::Install();
 		}
 
-		// partial work on this one.     BSMTAManager::RegisterObjects::execute function missing from vr so need to rethink this one
+		// BSMTAManager::RegisterObjectTask::Execute(RegisterObjectTask *this) inlined in vr/ng
 		if (REL::Module::IsF4() && *Settings::BSMTAManager) {
 			BSMTAManagerPatch::Install();
 		}
@@ -29,11 +29,11 @@ namespace Patches
 		if (REL::Module::IsF4() && *Settings::BSPreCulledObjects) {
 			BSPreCulledObjectsPatch::Install();
 		}
-		if (*Settings::BSTextureStreamerLocalHeap) {
+		if (!REL::Module::IsNG() && *Settings::BSTextureStreamerLocalHeap) {
 			BSTextureStreamerLocalHeapPatch::Install();
 		}
 
-		if (*Settings::HavokMemorySystem) {
+		if (!REL::Module::IsNG() && *Settings::HavokMemorySystem) {  // ctd in NG, more re needed
 			HavokMemorySystemPatch::Install();
 		}
 
@@ -41,33 +41,33 @@ namespace Patches
 			INISettingCollectionPatch::Install();
 		}
 
-		if (REL::Module::IsF4() && *Settings::InputSwitch) {
+		if (REL::Module::IsF4() && *Settings::InputSwitch) {  // TODO: NG
 			InputSwitchPatch::PreLoad();
 		}
 		if (*Settings::MaxStdIO != -1) {
 			MaxStdIOPatch::Install();
 		}
 
-		if (*Settings::MemoryManager || *Settings::MemoryManagerDebug) {
+		if (!REL::Module::IsNG() && (*Settings::MemoryManager || *Settings::MemoryManagerDebug)) {  // TODO: NG
 			MemoryManagerPatch::Install();
 		}
 
-		if (*Settings::ScaleformAllocator) {
+		if (!REL::Module::IsNG() && *Settings::ScaleformAllocator) {  // TODO: NG
 			ScaleformAllocatorPatch::Install();
 		}
 
-		if (*Settings::SmallBlockAllocator) {
+		if (!REL::Module::IsNG() && *Settings::SmallBlockAllocator) {  // TODO: NG
 			SmallBlockAllocatorPatch::Install();
 		}
 
-		if (REL::Module::IsF4() && *Settings::WorkshopMenu) {
+		if (REL::Module::IsF4() && *Settings::WorkshopMenu) {  // TODO: NG
 			WorkshopMenuPatch::Install();
 		}
 	}
 
 	void PostInit()
 	{
-		if (*Settings::InputSwitch) {
+		if (!REL::Module::IsNG() && *Settings::InputSwitch) {  // TODO: NG
 			InputSwitchPatch::PostInit();
 		}
 	}

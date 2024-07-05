@@ -7,7 +7,7 @@ namespace Warnings
 {
 	void PreLoad()
 	{
-		if (*Settings::CreateTexture2D) {
+		if (!REL::Module::IsNG() && *Settings::CreateTexture2D) {  // TODO: NG
 			CreateTexture2DWarning::Install();
 		}
 

@@ -55,7 +55,10 @@ namespace Warnings::ImageSpaceAdapterWarning
 			{
 				Xbyak::Label dst;
 
-				mov(r8, r14);
+				if (!REL::Module::IsNG())
+					mov(r8, r14);
+				else
+					mov(r8, r15);  // r15 in NG
 				jmp(ptr[rip + dst]);
 
 				L(dst);
@@ -92,7 +95,7 @@ namespace Warnings::ImageSpaceAdapterWarning
 	void Install()
 	{
 		auto& trampoline = F4SE::GetTrampoline();
-		REL::Relocation<std::uintptr_t> target{ REL::ID(231868), 0x57F };
+		REL::Relocation<std::uintptr_t> target{ REL::RelocationID(231868, 2199987), REL::VariantOffset(0x57F, 0x573, 0x57f) };
 		Patch p{ reinterpret_cast<std::uintptr_t>(&LoadChunk) };
 		p.ready();
 		_original = trampoline.write_call<5>(

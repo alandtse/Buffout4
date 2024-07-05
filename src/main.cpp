@@ -27,6 +27,15 @@ namespace
 		});
 	}
 
+	void PreLoad()
+	{
+		AllocTrampoline();
+		Crash::Install();
+		Fixes::PreLoad();
+		Patches::PreLoad();
+		Warnings::PreLoad();
+	}
+
 	void F4SEAPI MessageHandler(F4SE::MessagingInterface::Message* a_message)
 	{
 		switch (a_message->type) {
@@ -63,6 +72,11 @@ namespace
 		if (!path) {
 			stl::report_and_fail("Failed to find standard logging directory"sv);
 		}
+		const auto gamepath = REL::Module::IsVR() ? "Fallout4VR/F4SE" : "Fallout4/F4SE";
+		if (!path.value().generic_string().ends_with(gamepath)) {
+			// handle bug where game directory is missing
+			path = path.value().parent_path().append(gamepath);
+		}
 
 		*path /= fmt::format("{}.log"sv, "Buffout4"sv);
 		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
@@ -80,7 +94,6 @@ namespace
 
 		spdlog::set_default_logger(std::move(log));
 		spdlog::set_pattern("[%Y-%m-%d %T.%e][%-16s:%-4#][%L]: %v"s);
-
 	}
 }
 
@@ -118,7 +131,9 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f
 	if (!messaging || !messaging->RegisterListener(MessageHandler)) {
 		return false;
 	}
-
+	if (REL::Module::IsNG()) {  // NG has trouble with preloading. This may break some fixes, but not sure which.
+		PreLoad();
+	}
 	return true;
 }
 
@@ -241,16 +256,13 @@ namespace
 		static void thunk(std::uintptr_t* a_first, std::uintptr_t* a_last)
 		{
 			void (*const proxy)() = []() {
-				AllocTrampoline();
-				Crash::Install();
-				Fixes::PreLoad();
-				Patches::PreLoad();
-				Warnings::PreLoad();
+				if (!REL::Module::IsNG())
+					PreLoad();
 			};
 
 			std::vector<std::uintptr_t> cache(a_first, a_last);
 			const auto pos = [&]() {
-				const REL::Relocation<std::uintptr_t> preCppInit{ REL::ID(1440502) };
+				const REL::Relocation<std::uintptr_t> preCppInit{ REL::RelocationID(1440502, 2725537) };
 				const auto it = std::find(cache.begin(), cache.end(), preCppInit.address());
 				return it != cache.end() ? it + 1 :
 				       !cache.empty()    ? cache.begin() + 1 :
@@ -275,7 +287,6 @@ namespace
 		kInitializing,
 		kInitialized
 	};
-
 #ifndef NDEBUG
 	for (; !::IsDebuggerPresent();) {}
 #endif
@@ -288,20 +299,19 @@ namespace
 		OpenLog();
 		Settings::load();
 
-		REL::Relocation<NativeStartupState*> startupState{ REL::ID(3070) };
-		if (*startupState != NativeStartupState::kUninitialized) {
+		REL::Relocation<NativeStartupState*> startupState{ REL::RelocationID(3070, 2713426) };
+		if (!REL::Module::IsNG() && *startupState != NativeStartupState::kUninitialized) {
 			stl::report_and_fail(
 				fmt::format(
-					"{} has loaded too late. Try adjusting the plugin preloader load method."sv,
-					Plugin::NAME));
+					"{} has loaded too late: state {}. Try adjusting the plugin preloader load method."sv,
+					Plugin::NAME, static_cast<uint32_t>(*startupState)));
 		}
 
 		initterm::func = PatchIAT(
 			REL::Module::get().pointer(),
 			reinterpret_cast<std::uintptr_t>(initterm::thunk),
-			"MSVCR110.dll"sv,
-			"_initterm"sv);
-
+			REL::Module::IsNG() ? "api-ms-win-crt-runtime-l1-1-0.dll"sv : "MSVCR110.dll"sv,
+			REL::Module::IsNG() ? "_initterm_e"sv : "_initterm"sv);
 		g_preloaded = true;
 	}
 

@@ -68,7 +68,7 @@ namespace Patches::BSMTAManagerPatch
 			std::thread::id _tid{};
 			std::array<std::span<RE::BSMTAManager::RegisterObjectTask>, THREAD_COUNT> _tasks{};
 			std::atomic_size_t _idx{ 0 };
-			RegisterObjectTasks_t& _proxyTasks{ *reinterpret_cast<RegisterObjectTasks_t*>(REL::ID(377203).address()) };
+			RegisterObjectTasks_t& _proxyTasks{ *reinterpret_cast<RegisterObjectTasks_t*>(REL::RelocationID(377203, 2712969).address()) };
 		};
 
 		class Cache
@@ -94,7 +94,8 @@ namespace Patches::BSMTAManagerPatch
 			Cache() noexcept = default;
 			~Cache() noexcept = default;
 
-			ExecuteTask_t* const _executeTask{ reinterpret_cast<ExecuteTask_t*>(REL::ID(92771).address()) };
+			ExecuteTask_t* const _executeTask{ reinterpret_cast<ExecuteTask_t*>(REL::ID(92771).address()) }; //inlined in NG and VR.
+			// in both, essentially virtual function on BSShaderAccumulator*_BSMTAManager::pAccumulator + 160/168 VR/NG respectively
 		};
 
 		inline void RegisterObjects(RE::BSMTAManager::JobData& a_jobData)
@@ -125,14 +126,15 @@ namespace Patches::BSMTAManagerPatch
 	inline void Install()
 	{
 		{
-			const auto target = REL::ID(883019).address();
-			auto size = REL::Module::IsF4() ? 0xC5 : 0xE2;
+			// NG/VR have inlined function for executeTask
+			const auto target = REL::RelocationID(883019, 2318478).address();
+			auto size = REL::Relocate(0xC5, 0x14a, 0xE2);
 			REL::safe_fill(target, REL::INT3, size);
 			stl::asm_jump(target, size, reinterpret_cast<std::uintptr_t>(detail::RegisterObjects));
 		}
 
 		{
-			const auto target = REL::Relocation<std::uintptr_t>(REL::ID(485563), REL::Relocate(0x8E, 0x8e, 0x7E)).address();
+			const auto target = REL::Relocation<std::uintptr_t>(REL::RelocationID(485563, 2318474), REL::Relocate(0x8E, 0x9f, 0x7E)).address();
 			stl::write_thunk_call<5, detail::Submit>(target);
 		}
 

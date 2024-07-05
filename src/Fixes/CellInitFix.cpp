@@ -62,7 +62,7 @@ namespace Fixes::CellInitFix
 
 	void Install()
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::ID(868663), 0x3E };
+		REL::Relocation<std::uintptr_t> target{ REL::RelocationID(868663, 2200179), 0x3E };
 
 		detail::Patch p{ reinterpret_cast<std::uintptr_t>(detail::GetLocation) };
 		p.ready();

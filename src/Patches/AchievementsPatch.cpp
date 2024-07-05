@@ -61,15 +61,17 @@ namespace Patches::AchievementsPatch
 
 	void Install()
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::ID(1432894) };
-		std::size_t size = REL::Module::IsF4() ? 0x73 : 0xDC;
-		REL::safe_fill(target.address(), REL::INT3, size);
+		REL::Relocation<std::uintptr_t> target{ REL::ID(1432894) };  // NG 0x0295080
+		REL::Relocation<std::uintptr_t> targetNG{ REL::Offset(0x0295080) };
+		std::size_t size = REL::Relocate(0x73, 0x6E, 0xDC);
+		const auto address = (REL::Module::IsNG() ? targetNG : target).address();
+		REL::safe_fill(address, REL::INT3, size);
 
 		detail::Patch p;
 		p.ready();
 		assert(p.getSize() < size);
 		REL::safe_write(
-			target.address(),
+			address,
 			std::span{ p.getCode<const std::byte*>(), p.getSize() });
 
 		logger::info("installed Achievements patch"sv);

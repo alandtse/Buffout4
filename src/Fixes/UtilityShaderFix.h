@@ -4,7 +4,7 @@ namespace Fixes::UtilityShaderFix
 {
 	namespace detail
 	{
-		inline void CreateShaders()
+		inline void CreateShaders() // inlined in NG to 141cd3017
 		{
 			REL::Relocation<void()> func{ REL::ID(527640) };
 			func();
@@ -16,7 +16,7 @@ namespace Fixes::UtilityShaderFix
 
 	inline void Install()
 	{
-		REL::Relocation<std::uintptr_t> base{ REL::ID(768994) };
+		REL::Relocation<std::uintptr_t> base{ REL::RelocationID(768994, 2319078) };
 		detail::CreateShaders();
 		detail::PatchPixelShader(base.address());
 		detail::PatchVertexShader(base.address());

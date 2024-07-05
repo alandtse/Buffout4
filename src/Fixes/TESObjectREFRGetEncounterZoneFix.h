@@ -32,7 +32,7 @@ namespace TESObjectREFRGetEncounterZoneFix
 
 	inline void Install()
 	{
-		const auto root = REL::ID(1413642).address();
+		const auto root = REL::RelocationID(1413642, 2202627).address();
 
 		REL::safe_write(root + 0xD + 0x1, static_cast<std::uint8_t>(0x8D));  // mov -> lea
 		stl::write_thunk_call<5, detail::GetEncounterZone<RE::BGSEncounterZone>>(root + 0x14);

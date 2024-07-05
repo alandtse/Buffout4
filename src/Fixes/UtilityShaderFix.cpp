@@ -66,16 +66,16 @@ namespace Fixes::UtilityShaderFix::detail
 		{
 			Patch(std::uintptr_t a_data)
 			{
-				mov(rax, a_data);
+				mov(rax, a_data); // VR calls a function? maybe need to set r12
 				ret();
 			}
 		};
 
-		REL::Relocation<RE::BSGraphics::PixelShader**> shader{ REL::ID(286285) };
+		REL::Relocation<RE::BSGraphics::PixelShader**> shader{ REL::RelocationID(286285, 2710693) };
 		assert(*shader != nullptr);
 		Patch p{ reinterpret_cast<std::uintptr_t>(*shader) };
 		p.ready();
-		WritePatch(a_base, 0x1A4, 0x1AB, p);
+		WritePatch(a_base, 0x1A4, 0x1AB, p); // VR 0xf5, 0xfa but logic is very different in VR
 	}
 
 	void PatchVertexShader(std::uintptr_t a_base)
@@ -85,15 +85,16 @@ namespace Fixes::UtilityShaderFix::detail
 		{
 			Patch(std::uintptr_t a_data)
 			{
-				mov(r13, a_data);
+				mov(r13, a_data); // VR RSI, NG RAX
 				ret();
 			}
 		};
 
-		REL::Relocation<RE::BSGraphics::VertexShader**> shader{ REL::ID(67091) };
+		REL::Relocation<RE::BSGraphics::VertexShader**> shader{ REL::RelocationID(67091, 2710692) };
 		assert(*shader != nullptr);
 		Patch p{ reinterpret_cast<std::uintptr_t>(*shader) };
 		p.ready();
-		WritePatch(a_base, 0x150, 0x157, p);
+		WritePatch(a_base, 0x150, 0x157, p); // VR a7, aa (not enough space for write_call<6>). Also appears opposite order as flat
+		// NG also appears to lack space for write_call.
 	}
 }

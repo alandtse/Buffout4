@@ -13,7 +13,7 @@ namespace Fixes::SafeExitFix
 	inline void Install()
 	{
 		auto& trampoline = F4SE::GetTrampoline();
-		REL::Relocation<std::uintptr_t> target{ REL::ID(668528), 0x20 };
+		REL::Relocation<std::uintptr_t> target{ REL::RelocationID(668528, 2718225), REL::VariantOffset(0x20, 0x20b, 0x20) };  // NG is a different call function location
 		trampoline.write_call<5>(target.address(), detail::Shutdown);
 		logger::info("installed SafeExit fix"sv);
 	}

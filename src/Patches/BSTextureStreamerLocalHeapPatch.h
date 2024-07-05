@@ -46,7 +46,7 @@ namespace Patches::BSTextureStreamerLocalHeapPatch
 		{
 			using tuple_t = std::tuple<std::uint64_t, std::size_t>;
 			const std::array todo{
-				tuple_t{ 1100993, 0x7A },  // InsertFreeBlock
+				tuple_t{ 1100993, 0x7A },  // InsertFreeBlock NG 2275548
 				tuple_t{ 318310, 0x11F },  // RemoveFreeBlock
 			};
 

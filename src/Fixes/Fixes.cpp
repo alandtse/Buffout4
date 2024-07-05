@@ -45,7 +45,7 @@ namespace Fixes
 			CreateD3DAndSwapChainFix::Install();
 		}
 
-		if (*Settings::GreyMovies) {
+		if (!REL::Module::IsNG() && *Settings::GreyMovies) {
 			GreyMoviesFix::Install();
 		}
 
@@ -57,7 +57,7 @@ namespace Fixes
 			MovementPlannerFix::Install();
 		}
 
-		if (*Settings::PackageAllocateLocation) {
+		if (!REL::Module::IsNG() && *Settings::PackageAllocateLocation) {
 			PackageAllocateLocationFix::Install();
 		}
 
@@ -73,7 +73,7 @@ namespace Fixes
 			UnalignedLoadFix::Install();
 		}
 
-		if (REL::Module::IsVR() && *Settings::WorkBenchSwap) {
+		if (*Settings::WorkBenchSwap) {
 			WorkBenchSwapFix::Install();
 		}
 
@@ -85,6 +85,8 @@ namespace Fixes
 		// https://github.com/shad0wshayd3-FO4/BakaMaxPapyrusOps
 		if (REX::W32::GetModuleHandleW(L"BakaMaxPapyrusOps.dll")) {
 			logger::info("Detected BakaMaxPapyusOps, disabling redundant fixes/tweaks.");
+		} else if (REL::Module::IsNG()) {
+			logger::info("Detected NG, please install BakaMaxPapyusOps for these fixes. https://www.nexusmods.com/fallout4/mods/73774?tab=files");
 		} else {
 			if (*Settings::FixScriptPageAllocation) {
 				BakaMaxPapyrusOpsFixes::FixScriptPageAllocation::Install();
@@ -104,11 +106,12 @@ namespace Fixes
 
 	void PostInit()
 	{
-		if (*Settings::EncounterZoneReset) {
+		if (!REL::Module::IsNG() && *Settings::EncounterZoneReset) {
 			EncounterZoneResetFix::Install();
 		}
 
 		if (REL::Module::IsF4() && *Settings::UtilityShader) {
+			// VR/NG require more RE
 			UtilityShaderFix::Install();
 		}
 	}
