@@ -111,7 +111,7 @@ namespace Warnings::CreateTexture2DWarning
 					jmp(rax);
 				}
 			};
-			REL::Relocation<std::uintptr_t> target{ REL::ID(1165600), REL::Relocate(0x4c,0x4c, 0x5f) };
+			REL::Relocation<std::uintptr_t> target{ REL::ID(1165600), REL::Relocate(0x4c, 0x4c, 0x5f) };
 			WritePatch<Patch>(target.address(), 0x7);
 		}
 
