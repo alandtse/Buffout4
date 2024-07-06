@@ -127,6 +127,8 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f
 	spdlog::set_pattern("[%Y-%m-%d %T.%e][%-16s:%-4#][%L]: %v"s);
 	logger::info("NOTE: This is not a crashlog. Crashlogs have the name crash-[TIMESTAMP].log");
 	logger::info("Buffout 4 v{}.{}.{} {} {} is loading"sv, Plugin::VERSION[0], Plugin::VERSION[1], Plugin::VERSION[2], __DATE__, __TIME__);
+	const auto runtimeVer = REL::Module::get().version();
+	logger::info("Fallout 4 v{}.{}.{}"sv, runtimeVer[0], runtimeVer[1], runtimeVer[2]);
 	const auto messaging = F4SE::GetMessagingInterface();
 	if (!messaging || !messaging->RegisterListener(MessageHandler)) {
 		return false;
