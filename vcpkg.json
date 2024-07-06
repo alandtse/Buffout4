@@ -1,6 +1,6 @@
 {
   "name": "buffout4",
-  "version-semver": "1.35.0",
+  "version-semver": "1.35.1",
   "dependencies": [
     "args",
     "boost-algorithm",
