@@ -1,12 +1,14 @@
 #include "Fixes/Fixes.h"
 
 #include "Fixes/ActorIsHostileToActorFix.h"
+#include "Fixes/BGSAIWorldLocationRefRadiusNullFix.h"
 #include "Fixes/BSLightingShaderMaterialGlowmapFix.h"
 #include "Fixes/BackportedBA2Support.h"
 #include "Fixes/BakaMaxPapyrusOps.h"
 #include "Fixes/CellInitFix.h"
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
+#include "Fixes/GameDataReady.h"
 #include "Fixes/GreyMoviesFix.h"
 #include "Fixes/InteriorNavCutFix.h"
 #include "Fixes/MagicEffectApplyEventFix.h"
@@ -23,6 +25,12 @@ namespace Fixes
 {
 	void PreLoad()
 	{
+		// if (REL::Module::IsVR() && *Settings::GameDataReady) {
+		// 	if (F4SE::GetF4SEVersion() <= REL::Version{ 0, 6, 20, 0 }) {
+		// 		GameDataReadyFix::Install();
+		// 	} else
+		// 		logger::info("F4SEVR version {} not detected; skipping GameDataReady Fix.", F4SE::GetF4SEVersion().string());
+		// }
 		if (*Settings::ActorIsHostileToActor) {
 			ActorIsHostileToActorFix::Install();
 		}
@@ -31,6 +39,10 @@ namespace Fixes
 		// https://www.nexusmods.com/fallout4/mods/81859
 		if (REL::Module::IsVR() && *Settings::BackportedBA2Support) {
 			BackportedBA2Support::Install();
+		}
+
+		if (*Settings::BGSAIWorldLocationRefRadiusNull) {
+			BGSAIWorldLocationRefRadiusNullFix::Install();
 		}
 
 		if (REL::Module::IsVR() && *Settings::BSLightingShaderMaterialGlowmap) {

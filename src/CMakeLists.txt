@@ -41,6 +41,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/ActorIsHostileToActorFix.h"
 	"${SOURCE_DIR}/Fixes/BackportedBA2Support.h"
 	"${SOURCE_DIR}/Fixes/BakaMaxPapyrusOps.h"
+	"${SOURCE_DIR}/Fixes/BGSAIWorldLocationRefRadiusNullFix.h"
 	"${SOURCE_DIR}/Fixes/BSLightingShaderMaterialGlowmapFix.h"
 	"${SOURCE_DIR}/Fixes/CellInitFix.cpp"
 	"${SOURCE_DIR}/Fixes/CellInitFix.h"

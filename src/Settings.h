@@ -47,6 +47,7 @@ namespace Settings
 
 	MAKE_SETTING(bSetting, "Fixes", ActorIsHostileToActor, true);
 	MAKE_SETTING(bSetting, "Fixes", BackportedBA2Support, true);
+	MAKE_SETTING(bSetting, "Fixes", BGSAIWorldLocationRefRadiusNull, true);
 	MAKE_SETTING(bSetting, "Fixes", BSLightingShaderMaterialGlowmap, true);
 	MAKE_SETTING(bSetting, "Fixes", CellInit, true);
 	MAKE_SETTING(bSetting, "Fixes", CreateD3DAndSwapChain, true);
@@ -119,6 +120,7 @@ namespace Settings
 
 		LOAD(ActorIsHostileToActor);
 		LOAD(BackportedBA2Support);
+		LOAD(BGSAIWorldLocationRefRadiusNull)
 		LOAD(BSLightingShaderMaterialGlowmap);
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
