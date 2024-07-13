@@ -3,6 +3,7 @@
 #include "Fixes/Fixes.h"
 #include "Patches/Patches.h"
 #include "Warnings/Warnings.h"
+#include <Crash/PDB/PdbHandler.h>
 
 namespace
 {
@@ -136,6 +137,7 @@ extern "C" DLLEXPORT bool F4SEAPI F4SEPlugin_Load(const F4SE::LoadInterface* a_f
 	if (REL::Module::IsNG()) {  // NG has trouble with preloading. This may break some fixes, but not sure which.
 		PreLoad();
 	}
+	Crash::PDB::hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	return true;
 }
 

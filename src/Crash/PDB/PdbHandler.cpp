@@ -110,10 +110,10 @@ namespace Crash
 			return a_result;
 		}
 
-		std::string print_hr_failure(HRESULT hr)
+		std::string print_hr_failure(HRESULT a_hr)
 		{
 			auto errMsg = "";
-			switch ((unsigned int)hr) {
+			switch ((unsigned int)a_hr) {
 			case 0x806D0005:  // E_PDB_NOT_FOUND
 				errMsg = "Unable to locate PDB";
 				break;
@@ -122,7 +122,7 @@ namespace Crash
 				errMsg = "Invalid or obsolete file format";
 				break;
 			default:
-				_com_error err(hr);
+				_com_error err(a_hr);
 				errMsg = CT2A(err.ErrorMessage());
 			}
 			return errMsg;
@@ -138,7 +138,9 @@ namespace Crash
 				dll_path = Crash::PDB::sPluginPath.data() + dllPath.filename().string();
 			auto rva = (DWORD)a_offset;
 			CComPtr<IDiaDataSource> pSource;
-			auto hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+			if (!SUCCEEDED(hr)) {
+				hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+			}
 			if (FAILED(hr)) {
 				auto error = print_hr_failure(hr);
 				logger::info("Failed to initalize COM library for dll {}+{:07X}\t{}", a_name, a_offset, error);
@@ -292,7 +294,7 @@ namespace Crash
 			auto dll_path = path.string();
 			auto search_path = Crash::PDB::sPluginPath.data();
 			CComPtr<IDiaDataSource> source;
-			auto hr = CoCreateInstance(CLSID_DiaSource,
+			hr = CoCreateInstance(CLSID_DiaSource,
 				NULL,
 				CLSCTX_INPROC_SERVER,
 				__uuidof(IDiaDataSource),
