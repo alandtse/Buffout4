@@ -128,6 +128,43 @@ namespace Crash
 			return errMsg;
 		}
 
+		[[nodiscard]] static std::string demangle(std::string mangled)
+		{
+			const auto demangle = [](const char* a_in, char* a_out, std::uint32_t a_size) {
+				static std::mutex m;
+				std::lock_guard l{ m };
+				return WinAPI::UnDecorateSymbolName(
+					a_in,
+					a_out,
+					a_size,
+					(WinAPI::UNDNAME_NO_MS_KEYWORDS) |
+						(WinAPI::UNDNAME_NO_FUNCTION_RETURNS) |
+						(WinAPI::UNDNAME_NO_ALLOCATION_MODEL) |
+						(WinAPI::UNDNAME_NO_ALLOCATION_LANGUAGE) |
+						(WinAPI::UNDNAME_NO_THISTYPE) |
+						(WinAPI::UNDNAME_NO_ACCESS_SPECIFIERS) |
+						(WinAPI::UNDNAME_NO_THROW_SIGNATURES) |
+						(WinAPI::UNDNAME_NO_RETURN_UDT_MODEL) |
+						(WinAPI::UNDNAME_NAME_ONLY) |
+						(WinAPI::UNDNAME_NO_ARGUMENTS) |
+						static_cast<std::uint32_t>(0x8000));  // Disable enum/class/struct/union prefix
+			};
+
+			std::array<char, 0x1000> buf{ '\0' };
+			const auto len = demangle(
+				mangled.data() + 1,
+				buf.data(),
+				static_cast<std::uint32_t>(buf.size()));
+			auto str = std::string_view{ buf.data(), len };
+			if (len != 0 && str != "<unknown>" && str != "UNKNOWN") {
+				return fmt::format(
+					"({}*)",
+					str);
+			} else {
+				return mangled;
+			}
+		}
+
 		//https://stackoverflow.com/questions/68412597/determining-source-code-filename-and-line-for-function-using-visual-studio-pdb
 		std::string pdb_details(std::string_view a_name, uintptr_t a_offset)
 		{
@@ -240,6 +277,7 @@ namespace Crash
 			IDiaSymbol* publicSymbol;
 			if (pSession->findSymbolByRVA(rva, SymTagEnum::SymTagPublicSymbol, &publicSymbol) == S_OK) {
 				auto publicResult = processSymbol(publicSymbol, pSession, rva, a_name, a_offset, result);
+				publicResult = demangle(publicResult);
 				DWORD privateRva;
 				IDiaSymbol* privateSymbol;
 				if (
