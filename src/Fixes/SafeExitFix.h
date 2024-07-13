@@ -6,6 +6,7 @@ namespace Fixes::SafeExitFix
 	{
 		inline void Shutdown()
 		{
+			spdlog::default_logger()->flush();
 			REX::W32::TerminateProcess(REX::W32::GetCurrentProcess(), EXIT_SUCCESS);
 		}
 	}
