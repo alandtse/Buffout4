@@ -89,7 +89,7 @@ namespace Fixes
 			WorkBenchSwapFix::Install();
 		}
 
-		if (REL::Module::IsVR() && *Settings::PipboyLightInvFix) {
+		if (*Settings::PipboyLightInvFix) {
 			PipboyLightInvFix::Install();
 		}
 
