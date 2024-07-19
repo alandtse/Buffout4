@@ -157,9 +157,7 @@ namespace Crash
 				static_cast<std::uint32_t>(buf.size()));
 			auto str = std::string_view{ buf.data(), len };
 			if (len != 0 && str != "<unknown>" && str != "UNKNOWN") {
-				return fmt::format(
-					"({}*)",
-					str);
+				return fmt::format("({}*) {}", str, mangled);
 			} else {
 				return mangled;
 			}
