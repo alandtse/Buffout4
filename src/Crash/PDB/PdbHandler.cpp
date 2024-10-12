@@ -289,8 +289,9 @@ namespace Crash
 						result = privateResult;
 					}
 					privateSymbol->Release();
+				} else {
+					result = publicResult;
 				}
-				result = publicResult;
 			}
 			publicSymbol->Release();
 			pSession->Release();
