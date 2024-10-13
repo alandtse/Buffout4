@@ -10,7 +10,13 @@
 #   described by the vcpkg.json manifest file. It will be a no-op if those are restored from cache.
 # - Finally builds the sources with Ninja.
 name: Semantic Release and Build
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["maintenance"]
+    types:
+      - completed
 
 jobs:
   job:
