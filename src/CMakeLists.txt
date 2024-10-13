@@ -49,6 +49,7 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/CreateD3DAndSwapChainFix.h"
 	"${SOURCE_DIR}/Fixes/EncounterZoneResetFix.h"
 	"${SOURCE_DIR}/Fixes/EscapeFreeze.h"
+	"${SOURCE_DIR}/Fixes/FollowerStrayBulletFix.h"
 	"${SOURCE_DIR}/Fixes/Fixes.cpp"
 	"${SOURCE_DIR}/Fixes/Fixes.h"
 	"${SOURCE_DIR}/Fixes/GameDataReady.h"

@@ -55,6 +55,7 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Fixes", EscapeFreeze, true);
 	MAKE_SETTING(bSetting, "Fixes", FixScriptPageAllocation, true);
 	MAKE_SETTING(bSetting, "Fixes", FixToggleScriptsCommand, true);
+	MAKE_SETTING(bSetting, "Fixes", FollowerStrayBullet, true);
 	MAKE_SETTING(bSetting, "Fixes", GreyMovies, true);
 	MAKE_SETTING(bSetting, "Fixes", InteriorNavCut, true);
 	MAKE_SETTING(bSetting, "Fixes", MagicEffectApplyEvent, true);
@@ -130,6 +131,7 @@ namespace Settings
 		LOAD(FixScriptPageAllocation);
 		LOAD(FixToggleScriptsCommand);
 
+		LOAD(FollowerStrayBullet);
 		LOAD(GreyMovies);
 		LOAD(InteriorNavCut);
 		LOAD(MagicEffectApplyEvent);

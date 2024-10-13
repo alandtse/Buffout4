@@ -9,6 +9,7 @@
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
 #include "Fixes/EscapeFreeze.h"
+#include "Fixes/FollowerStrayBulletFix.h"
 #include "Fixes/GameDataReady.h"
 #include "Fixes/GreyMoviesFix.h"
 #include "Fixes/InteriorNavCutFix.h"
@@ -149,6 +150,10 @@ namespace Fixes
 
 	void GameDataReady()
 	{
+		if (REL::Module::IsVR() && *Settings::FollowerStrayBullet) {
+			FollowerStrayBulletFix::Install();
+		}
+
 		// VR requires F4SEVR 0.6.21 and newer to fire (or f4ee.dll VR) to fire
 		if (*Settings::InteriorNavCut) {
 			if (REX::W32::GetModuleHandleW(L"Interior-NavCut-Fix.dll")) {
