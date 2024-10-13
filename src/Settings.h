@@ -52,6 +52,7 @@ namespace Settings
 	MAKE_SETTING(bSetting, "Fixes", CellInit, true);
 	MAKE_SETTING(bSetting, "Fixes", CreateD3DAndSwapChain, true);
 	MAKE_SETTING(bSetting, "Fixes", EncounterZoneReset, true);
+	MAKE_SETTING(bSetting, "Fixes", EscapeFreeze, true);
 	MAKE_SETTING(bSetting, "Fixes", FixScriptPageAllocation, true);
 	MAKE_SETTING(bSetting, "Fixes", FixToggleScriptsCommand, true);
 	MAKE_SETTING(bSetting, "Fixes", GreyMovies, true);
@@ -125,6 +126,7 @@ namespace Settings
 		LOAD(CellInit);
 		LOAD(CreateD3DAndSwapChain);
 		LOAD(EncounterZoneReset);
+		LOAD(EscapeFreeze);
 		LOAD(FixScriptPageAllocation);
 		LOAD(FixToggleScriptsCommand);
 

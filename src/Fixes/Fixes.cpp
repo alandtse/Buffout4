@@ -8,6 +8,7 @@
 #include "Fixes/CellInitFix.h"
 #include "Fixes/CreateD3DAndSwapChainFix.h"
 #include "Fixes/EncounterZoneResetFix.h"
+#include "Fixes/EscapeFreeze.h"
 #include "Fixes/GameDataReady.h"
 #include "Fixes/GreyMoviesFix.h"
 #include "Fixes/InteriorNavCutFix.h"
@@ -55,6 +56,10 @@ namespace Fixes
 
 		if (*Settings::CreateD3DAndSwapChain) {
 			CreateD3DAndSwapChainFix::Install();
+		}
+
+		if (REL::Module::IsVR() && *Settings::EscapeFreeze) {
+			EscapeFreeze::Install();
 		}
 
 		if (!REL::Module::IsNG() && *Settings::GreyMovies) {
