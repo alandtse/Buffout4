@@ -338,7 +338,6 @@ namespace Crash
 
 			auto symcache = *Settings::Symcache;
 
-
 			if (!symcacheChecked) {
 				if (!symcache.empty() && std::filesystem::exists(symcache) && std::filesystem::is_directory(symcache)) {
 					logger::info("Symcache found at {}", symcache);
@@ -349,7 +348,7 @@ namespace Crash
 				symcacheChecked = true;
 			}
 
-			std::vector<std::string> searchPaths = { Crash::PDB::sPluginPath.data()};
+			std::vector<std::string> searchPaths = { Crash::PDB::sPluginPath.data() };
 
 			if (symcacheValid) {
 				searchPaths.push_back(fmt::format(fmt::runtime("cache*{}"s), symcache.c_str()));
