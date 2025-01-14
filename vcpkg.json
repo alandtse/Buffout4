@@ -23,7 +23,10 @@
     "rsm-binary-io",
     "rsm-mmio",
     "srell",
-    "spdlog",
+    {
+      "name": "spdlog",
+      "version>=": "1.15.0"
+    },
     "tbb",
     "tomlplusplus",
     "xbyak",
