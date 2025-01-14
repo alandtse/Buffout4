@@ -10,7 +10,6 @@
 #include "Fixes/EncounterZoneResetFix.h"
 #include "Fixes/EscapeFreeze.h"
 #include "Fixes/FollowerStrayBulletFix.h"
-#include "Fixes/GameDataReady.h"
 #include "Fixes/GreyMoviesFix.h"
 #include "Fixes/InteriorNavCutFix.h"
 #include "Fixes/MagicEffectApplyEventFix.h"
@@ -27,12 +26,6 @@ namespace Fixes
 {
 	void PreLoad()
 	{
-		// if (REL::Module::IsVR() && *Settings::GameDataReady) {
-		// 	if (F4SE::GetF4SEVersion() <= REL::Version{ 0, 6, 20, 0 }) {
-		// 		GameDataReadyFix::Install();
-		// 	} else
-		// 		logger::info("F4SEVR version {} not detected; skipping GameDataReady Fix.", F4SE::GetF4SEVersion().string());
-		// }
 		if (*Settings::ActorIsHostileToActor) {
 			ActorIsHostileToActorFix::Install();
 		}

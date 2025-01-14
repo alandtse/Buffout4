@@ -52,7 +52,6 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Fixes/FollowerStrayBulletFix.h"
 	"${SOURCE_DIR}/Fixes/Fixes.cpp"
 	"${SOURCE_DIR}/Fixes/Fixes.h"
-	"${SOURCE_DIR}/Fixes/GameDataReady.h"
 	"${SOURCE_DIR}/Fixes/GreyMoviesFix.h"
 	"${SOURCE_DIR}/Fixes/InteriorNavCutFix.h"
 	"${SOURCE_DIR}/Fixes/MagicEffectApplyEventFix.h"
