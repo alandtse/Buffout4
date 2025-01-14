@@ -16,6 +16,6 @@ env:
 
 jobs:
   aragas-unex-refresh-nexusmods:
-    uses: alandtse/Buffout4/.github/workflows/refresh-unex-nexusmods.yml@main
+    uses: alandtse/Buffout4/.github/workflows/refresh-unex-nexusmods.yml@master
     secrets:
       NEXUSMODS_SESSION_COOKIE: ${{ secrets.UNEX_NEXUSMODS_SESSION_COOKIE }}
