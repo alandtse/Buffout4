@@ -355,15 +355,18 @@ namespace Crash
 			const auto datahandler = RE::TESDataHandler::GetSingleton();
 			if (datahandler) {
 				if (REL::Module::IsF4()) {
-					const auto& [files, smallfiles] = datahandler->compiledFileCollection;
-					const auto fileFormat = [&]() {
-						return "\t[{:>02X}]{:"s + (!smallfiles.empty() ? "5"s : "1"s) + "}{}"s;
-					}();
-					for (const auto file : files) {
-						a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
-					}
-					for (const auto file : smallfiles) {
-						a_log.critical("\t[FE:{:>03X}] {}"sv, file->GetSmallFileCompileIndex(), file->GetFilename());
+					auto compiledFileCollection = datahandler->GetCompiledFileCollection();
+					if (compiledFileCollection) {
+						const auto& [files, smallfiles] = *compiledFileCollection;
+						const auto fileFormat = [&]() {
+							return "\t[{:>02X}]{:"s + (!smallfiles.empty() ? "5"s : "1"s) + "}{}"s;
+						}();
+						for (const auto file : files) {
+							a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
+						}
+						for (const auto file : smallfiles) {
+							a_log.critical("\t[FE:{:>03X}] {}"sv, file->GetSmallFileCompileIndex(), file->GetFilename());
+						}
 					}
 				} else {  // VR does not have light esps so only ->files is necessary.
 					auto& files = datahandler->files;
