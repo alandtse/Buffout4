@@ -354,24 +354,33 @@ namespace Crash
 
 			const auto datahandler = RE::TESDataHandler::GetSingleton();
 			if (datahandler) {
-				if (REL::Module::IsF4()) {
+				auto modCount = 0;
+				auto lightCount = 0;
+				if (!REL::Module::IsVR() || datahandler->VRcompiledFileCollection) {  // either not VR or VR with ESL support
 					auto compiledFileCollection = datahandler->GetCompiledFileCollection();
 					if (compiledFileCollection) {
 						const auto& [files, smallfiles] = *compiledFileCollection;
 						const auto fileFormat = [&]() {
 							return "\t[{:>02X}]{:"s + (!smallfiles.empty() ? "5"s : "1"s) + "}{}"s;
 						}();
-						for (const auto file : files) {
+
+						modCount = files.size();
+						lightCount = smallfiles.size();
+						a_log.critical("\tLight: {}\tRegular: {}\tTotal: {}"sv, lightCount, modCount, lightCount + modCount);
+						for (const auto& file : files) {
 							a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
 						}
-						for (const auto file : smallfiles) {
+
+						for (const auto& file : smallfiles) {
 							a_log.critical("\t[FE:{:>03X}] {}"sv, file->GetSmallFileCompileIndex(), file->GetFilename());
 						}
 					}
-				} else {  // VR does not have light esps so only ->files is necessary.
+				} else {  // VR does not have light ESPs, so only count regular mods
 					auto& files = datahandler->files;
 					const auto fileFormat = [&]() { return "\t[{:>02X}]{:"s + "}{}"s; }();
-					for (const auto file : files) {
+					modCount = static_cast<int>(std::distance(files.begin(), files.end()));
+					a_log.critical("\tLight: {}\tRegular: {}\tTotal: {}"sv, lightCount, modCount, lightCount + modCount);
+					for (const auto& file : files) {
 						a_log.critical(fmt::runtime(fileFormat), file->GetCompileIndex(), "", file->GetFilename());
 					}
 				}
