@@ -117,7 +117,7 @@ namespace Fixes
 
 	void PostInit()
 	{
-		if (!REL::Module::IsNG() && *Settings::EncounterZoneReset) {
+		if (*Settings::EncounterZoneReset) {
 			EncounterZoneResetFix::Install();
 		}
 
