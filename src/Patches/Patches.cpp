@@ -3,6 +3,7 @@
 #include "Patches/AchievementsPatch.h"
 #include "Patches/BSMTAManagerPatch.h"
 #include "Patches/BSPreCulledObjectsPatch.h"
+#include "Patches/BSPreCulledObjectsPatchVR.h"
 #include "Patches/BSTextureStreamerLocalHeapPatch.h"
 #include "Patches/HavokMemorySystemPatch.h"
 #include "Patches/INISettingCollectionPatch.h"
@@ -26,8 +27,12 @@ namespace Patches
 			BSMTAManagerPatch::Install();
 		}
 
-		if (REL::Module::IsF4() && *Settings::BSPreCulledObjects) {
-			BSPreCulledObjectsPatch::Install();
+		if (*Settings::BSPreCulledObjects) {
+			if (REL::Module::IsF4()) {
+				BSPreCulledObjectsPatch::Install();
+			} else if (REL::Module::IsVR()) {
+				BSPreCulledObjectsPatchVR::Install();
+			}
 		}
 		if (!REL::Module::IsNG() && *Settings::BSTextureStreamerLocalHeap) {
 			BSTextureStreamerLocalHeapPatch::Install();
