@@ -70,6 +70,8 @@ set(SOURCE_FILES
 	"${SOURCE_DIR}/Patches/BSPreCulledObjectsPatch.h"
 	"${SOURCE_DIR}/Patches/BSPreCulledObjectsPatchVR.h"
 	"${SOURCE_DIR}/Patches/BSTextureStreamerLocalHeapPatch.h"
+	"${SOURCE_DIR}/Patches/FasterWorkshopPatch.cpp"
+	"${SOURCE_DIR}/Patches/FasterWorkshopPatch.h"
 	"${SOURCE_DIR}/Patches/HavokMemorySystemPatch.h"
 	"${SOURCE_DIR}/Patches/INISettingCollectionPatch.h"
 	"${SOURCE_DIR}/Patches/InputSwitchPatch.cpp"
