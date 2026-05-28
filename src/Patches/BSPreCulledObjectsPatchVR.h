@@ -446,6 +446,23 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				a_fn(record);
 
 				cursor += IDTo3DHandler::kArenaRecordBytes;
+				// Defensive: if begin_/end_ aren't stride-aligned, cursor
+				// can overshoot the current page without exact equality.
+				// Bail rather than chase a corrupt next-page pointer.
+				// We don't compare cursor against endAll directly because
+				// begin_ and end_ can live on different chained pages at
+				// arbitrary virtual addresses; only the per-page bound is
+				// safe to compare with < / >.
+				if (cursor > pageEnd) [[unlikely]] {
+					logger::error(
+						"ForEachArenaRecord: cursor overshot page; arena={:X} page={:X} pageEnd={:X} cursor={:X} end={:X}"sv,
+						reinterpret_cast<std::uintptr_t>(a_arena),
+						reinterpret_cast<std::uintptr_t>(page),
+						reinterpret_cast<std::uintptr_t>(pageEnd),
+						reinterpret_cast<std::uintptr_t>(cursor),
+						reinterpret_cast<std::uintptr_t>(endAll));
+					break;
+				}
 				if (cursor == pageEnd) {
 					page = *reinterpret_cast<std::byte**>(pageEnd);
 					if (!page) {
