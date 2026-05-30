@@ -1,46 +1,7 @@
 #include "Patches/FasterWorkshopPatch.h"
 
 #define WIN32_LEAN_AND_MEAN
-
-#define NOGDICAPMASKS
-#define NOVIRTUALKEYCODES
-#define NOWINMESSAGES
-#define NOWINSTYLES
-#define NOSYSMETRICS
-#define NOMENUS
-#define NOICONS
-#define NOKEYSTATES
-#define NOSYSCOMMANDS
-#define NORASTEROPS
-#define NOSHOWWINDOW
-#define OEMRESOURCE
-#define NOATOM
-#define NOCLIPBOARD
-#define NOCOLOR
-#define NOCTLMGR
-#define NODRAWTEXT
-#define NOGDI
-#define NOKERNEL
-#define NOUSER
-#define NONLS
-#define NOMB
-#define NOMEMMGR
-#define NOMETAFILE
 #define NOMINMAX
-#define NOMSG
-#define NOOPENFILE
-#define NOSCROLL
-#define NOSERVICE
-#define NOSOUND
-#define NOTEXTMETRIC
-#define NOWH
-#define NOWINOFFSETS
-#define NOCOMM
-#define NOKANJI
-#define NOHELP
-#define NOPROFILER
-#define NODEFERWINDOWPOS
-#define NOMCX
 
 #include <xbyak/xbyak.h>
 
@@ -107,11 +68,19 @@ namespace Patches::FasterWorkshopPatch
 				total);
 		}
 
-		// Drop-in replacement for the game's CheckForValidChildren. Walks a keyword list
-		// and reports whether any referenced recipe is currently visible in the workshop UI.
-		static bool CachedCheckForValidChildren(void* a_ctx, const RE::BGSListForm* a_formList) noexcept
+		// Guards against a malformed FormList that (transitively) contains
+		// itself — a self-referential FLST would otherwise recurse until
+		// the stack overflows. Valid game data is acyclic and nests only a
+		// few levels deep, so a generous cap costs nothing on real data.
+		static constexpr std::uint32_t kMaxFormListDepth = 64;
+
+		// Recursive worker. Kept separate from the detour entry point so the
+		// depth parameter never leaks into the engine-facing ABI (the engine
+		// calls the 2-arg entry below; a default arg would surface r8 garbage
+		// as the depth).
+		static bool CheckForValidChildrenImpl(void* a_ctx, const RE::BGSListForm* a_formList, std::uint32_t a_depth) noexcept
 		{
-			if (!a_formList) {
+			if (!a_formList || a_depth >= kMaxFormListDepth) {
 				return false;
 			}
 
@@ -121,7 +90,7 @@ namespace Patches::FasterWorkshopPatch
 				}
 
 				if (form->Is(RE::ENUM_FORM_ID::kFLST)) {
-					if (CachedCheckForValidChildren(a_ctx, static_cast<RE::BGSListForm*>(form))) {
+					if (CheckForValidChildrenImpl(a_ctx, static_cast<RE::BGSListForm*>(form), a_depth + 1)) {
 						return true;
 					}
 				} else if (form->Is(RE::ENUM_FORM_ID::kKYWD)) {
@@ -146,6 +115,13 @@ namespace Patches::FasterWorkshopPatch
 			}
 
 			return false;
+		}
+
+		// Drop-in replacement for the game's CheckForValidChildren. Signature
+		// must match the engine's (void*, BGSListForm*) — see worker above.
+		static bool CachedCheckForValidChildren(void* a_ctx, const RE::BGSListForm* a_formList) noexcept
+		{
+			return CheckForValidChildrenImpl(a_ctx, a_formList, 0);
 		}
 
 		// Called by the leaf-node trampoline. Replaces an O(N) iteration over the game's
