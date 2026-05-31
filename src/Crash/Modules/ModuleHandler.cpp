@@ -257,7 +257,7 @@ namespace Crash::Modules
 		// Zydis code from https://github.com/zyantific/zydis/tree/v3.2.1#quick-example under MIT
 		// Initialize decoder context
 		ZydisDecoder decoder;
-		ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64);
+		ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
 		// Initialize formatter. Only required when you actually plan to do instruction
 		// formatting ("disassembling"), like we do here
 		ZydisFormatter formatter;
@@ -269,13 +269,15 @@ namespace Crash::Modules
 		memcpy(data, (const void*)runtime_address, sizeof(data));
 		const ZyanUSize length = sizeof(data);
 		ZydisDecodedInstruction instruction;
+		ZydisDecodedOperand operands[ZYDIS_MAX_OPERAND_COUNT];
 		std::string assembly = "";
-		if (ZYAN_SUCCESS(ZydisDecoderDecodeBuffer(&decoder, data + offset, length - offset,
-				&instruction))) {  // Grab only one instruction
+		if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, data + offset, length - offset,
+				&instruction, operands))) {  // Grab only one instruction
 			// Format & convert the binary instruction structure to human readable format
 			char buffer[256];
-			ZydisFormatterFormatInstruction(&formatter, &instruction, buffer, sizeof(buffer),
-				runtime_address);
+			ZydisFormatterFormatInstruction(&formatter, &instruction, operands,
+				instruction.operand_count_visible, buffer, sizeof(buffer),
+				runtime_address, ZYAN_NULL);
 			assembly = std::format("{}", buffer);
 			//offset += instruction.length;
 			//runtime_address += instruction.length;
