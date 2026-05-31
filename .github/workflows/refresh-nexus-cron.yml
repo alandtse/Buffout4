@@ -14,8 +14,13 @@ env:
   # Disable sending .NET CLI telemetry to Microsoft.
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
+permissions:
+  contents: read
+
 jobs:
   aragas-unex-refresh-nexusmods:
+    # Only run the credential-refresh cron on the canonical repo, not forks.
+    if: github.repository_owner == 'alandtse'
     uses: alandtse/Buffout4/.github/workflows/refresh-unex-nexusmods.yml@master
     secrets:
       NEXUSMODS_SESSION_COOKIE: ${{ secrets.UNEX_NEXUSMODS_SESSION_COOKIE }}
