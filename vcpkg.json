@@ -30,5 +30,15 @@
     "zycore",
     "zydis"
   ],
-  "builtin-baseline": "d015e31e90838a4c9dfa3eed45979bc70d9357fc"
+  "builtin-baseline": "d015e31e90838a4c9dfa3eed45979bc70d9357fc",
+  "overrides": [
+    {
+      "name": "fmt",
+      "version": "10.2.1"
+    },
+    {
+      "name": "spdlog",
+      "version": "1.14.1"
+    }
+  ]
 }
