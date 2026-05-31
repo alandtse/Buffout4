@@ -2,20 +2,26 @@ name: Scripted maintenance
 
 on: push
 
+permissions:
+  contents: read
+
 jobs:
   maintenance:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'alandtse'
+    permissions:
+      contents: write   # git-auto-commit pushes the formatting commit
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@e9aba2c848f5ebd159c070c61ea2c4e2b122355e # v2
       with:
         python-version: '3.9'
 
     - name: Run clang-format
       run: find -type f \( -name *.h -o -name *.cpp \) | xargs clang-format-16 -style=file -i
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a # v4
       with:
         commit_message: "style: maintenance"

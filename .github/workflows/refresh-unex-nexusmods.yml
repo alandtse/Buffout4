@@ -7,13 +7,18 @@ on:
       UNEX_NEXUSMODS_SESSION_COOKIE:
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   refresh-unex-credentials-nexusmods:
     name: Refresh Credentials for NexusMods
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@master
+        uses: actions/setup-dotnet@7df9f59802b508a78c4e4e0f48c27ed646a9158c # master (pinned)
         with:
           dotnet-version: 8.x.x
 

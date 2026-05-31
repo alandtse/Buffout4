@@ -2,13 +2,18 @@ name: "Check Nexus credentials"
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     if: github.repository_owner == 'alandtse'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Setup Dotnet
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@8e6bd2905eef86446227f003dda1deb3916c4aaf # v2
         with:
           dotnet-version: 6.x.x
           include-prerelease: false
