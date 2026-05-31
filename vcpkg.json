@@ -32,31 +32,5 @@
     "zycore",
     "zydis"
   ],
-  "builtin-baseline": "d015e31e90838a4c9dfa3eed45979bc70d9357fc",
-  "overrides": [
-    {
-      "name": "fmt",
-      "version": "10.2.1"
-    },
-    {
-      "name": "spdlog",
-      "version": "1.14.1"
-    },
-    {
-      "name": "zydis",
-      "version": "3.2.1"
-    },
-    {
-      "name": "zycore",
-      "version": "1.3.0"
-    },
-    {
-      "name": "magic-enum",
-      "version": "0.8.2"
-    },
-    {
-      "name": "srell",
-      "version": "3.010"
-    }
-  ]
+  "builtin-baseline": "d015e31e90838a4c9dfa3eed45979bc70d9357fc"
 }

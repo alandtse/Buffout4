@@ -61,7 +61,7 @@
     },
     {
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /wd4100 /external:W0"
+        "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /external:W0"
       },
       "hidden": true,
       "name": "vs2022-flags"
