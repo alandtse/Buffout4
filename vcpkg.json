@@ -13,7 +13,9 @@
     "frozen",
     {
       "name": "infoware",
-      "features": ["d3d"]
+      "features": [
+        "d3d"
+      ]
     },
     "magic-enum",
     "nowide",
@@ -51,6 +53,10 @@
     {
       "name": "magic-enum",
       "version": "0.8.2"
+    },
+    {
+      "name": "srell",
+      "version": "3.010"
     }
   ]
 }
