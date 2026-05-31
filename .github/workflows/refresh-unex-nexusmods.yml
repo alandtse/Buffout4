@@ -18,7 +18,7 @@ jobs:
       contents: read
     steps:
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@7df9f59802b508a78c4e4e0f48c27ed646a9158c # master (pinned)
+        uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5.3.0
         with:
           dotnet-version: 8.x.x
 
