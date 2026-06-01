@@ -191,7 +191,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		struct Shard
 		{
 			mutable std::shared_mutex lock;
-			IDTo3DMap                 map;
+			IDTo3DMap map;
 		};
 
 		class IDTo3DHandler
@@ -210,13 +210,13 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			// would read PC offsets and crash on VR.
 			struct PreCulledObjects_t
 			{
-				void*         head;    // 0x00 - Page*
-				void*         next;    // 0x08 - Page** (unused by us)
-				void*         tail;    // 0x10 - Page*
-				void*         free;    // 0x18 - Page* (unused by us)
-				std::byte*    end_;    // 0x20 - one past last live record
-				std::byte*    begin_;  // 0x28 - first live record
-				std::uint32_t size_;   // 0x30
+				void* head;           // 0x00 - Page*
+				void* next;           // 0x08 - Page** (unused by us)
+				void* tail;           // 0x10 - Page*
+				void* free;           // 0x18 - Page* (unused by us)
+				std::byte* end_;      // 0x20 - one past last live record
+				std::byte* begin_;    // 0x28 - first live record
+				std::uint32_t size_;  // 0x30
 			};
 
 			// 16-byte record per VR's iteration stride. VR pages hold
@@ -245,21 +245,21 @@ namespace Patches::BSPreCulledObjectsPatchVR
 
 			[[nodiscard]] RE::NiAVObject* MapFindOne(std::uint32_t a_id) const noexcept
 			{
-				const auto&             shard = _shards[ShardIndex(a_id)];
+				const auto& shard = _shards[ShardIndex(a_id)];
 				std::shared_lock<std::shared_mutex> lk(shard.lock);
 				return shard.map.find_one(a_id);
 			}
 
 			void MapInsertOrAssign(std::uint32_t a_id, RE::NiAVObject* a_obj)
 			{
-				auto&                               shard = _shards[ShardIndex(a_id)];
+				auto& shard = _shards[ShardIndex(a_id)];
 				std::unique_lock<std::shared_mutex> lk(shard.lock);
 				shard.map.insert_or_assign(a_id, a_obj);
 			}
 
 			void MapErase(std::uint32_t a_id)
 			{
-				auto&                               shard = _shards[ShardIndex(a_id)];
+				auto& shard = _shards[ShardIndex(a_id)];
 				std::unique_lock<std::shared_mutex> lk(shard.lock);
 				shard.map.erase(a_id);
 			}
@@ -292,7 +292,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		private:
 			using AddToCullingGroup_t = void(void*, RE::NiAVObject*, const RE::NiBound&, std::uint32_t);
 
-			IDTo3DHandler()  = default;
+			IDTo3DHandler() = default;
 			~IDTo3DHandler() = default;
 
 			// VR Address Library doesn't yet expose IDs for these
@@ -338,7 +338,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				return;
 			}
 
-			auto* page   = static_cast<std::byte*>(a_arena->head);
+			auto* page = static_cast<std::byte*>(a_arena->head);
 			auto* cursor = a_arena->begin_;
 			auto* endAll = a_arena->end_;
 			if (!page) {
@@ -360,7 +360,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			}
 
 			constexpr std::size_t kMaxIter = 1'000'000;
-			std::size_t           count    = 0;
+			std::size_t count = 0;
 
 			while (cursor != endAll) {
 				if (++count > kMaxIter) {
@@ -402,7 +402,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 					if (!page) {
 						break;
 					}
-					cursor  = page;
+					cursor = page;
 					pageEnd = page + IDTo3DHandler::kArenaPageBytes;
 				}
 			}
@@ -419,7 +419,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 					}
 					// VR's stock rain path skips shadowcasters in the
 					// arena pass. Mirror that here.
-					const auto raw   = reinterpret_cast<const std::uint8_t*>(a_record.obj);
+					const auto raw = reinterpret_cast<const std::uint8_t*>(a_record.obj);
 					const auto flags = *reinterpret_cast<const std::uint64_t*>(raw + 0x108);
 					if (((flags >> 0x28) & 1ULL) == 0) {
 						handler.AddToCullingGroup(
@@ -454,7 +454,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		// populated for un-hooked Get3DForID call sites — and so the
 		// sentinel verifier below has a live stock table to compare
 		// against.
-		using UpdateIDto3DMap_t          = void(std::uint32_t, RE::NiAVObject*);
+		using UpdateIDto3DMap_t = void(std::uint32_t, RE::NiAVObject*);
 		UpdateIDto3DMap_t* OriginalUpdateIDto3DMap = nullptr;
 
 		void UpdateIDto3DMap(std::uint32_t a_id, RE::NiAVObject* a_obj)
@@ -494,7 +494,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		//
 		// Signature: NiAVObject* __fastcall Get3DForID(uint32_t formID)
 		// ----------------------------------------------------------------
-		using Get3DForID_t          = RE::NiAVObject*(std::uint32_t);
+		using Get3DForID_t = RE::NiAVObject*(std::uint32_t);
 		Get3DForID_t* OriginalGet3DForID = nullptr;
 
 		// Performance counters — atomic, near-zero overhead on the hot
@@ -507,11 +507,11 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			std::atomic<std::uint64_t> mapMisses{ 0 };
 			std::atomic<std::uint64_t> ghostMisses{ 0 };
 			std::atomic<std::uint64_t> realMisses{ 0 };
-			std::atomic<std::int64_t>  lastLogTime{ 0 };  // steady_clock ns
+			std::atomic<std::int64_t> lastLogTime{ 0 };  // steady_clock ns
 
-			static constexpr double        kLogIntervalSeconds = 60.0;
-			static constexpr std::uint64_t kSentinelMask       = 0xFFFu;   // 1 in 4096
-			static constexpr std::uint64_t kLogGateMask        = 0x3FFFu;  // 1 in 16384
+			static constexpr double kLogIntervalSeconds = 60.0;
+			static constexpr std::uint64_t kSentinelMask = 0xFFFu;  // 1 in 4096
+			static constexpr std::uint64_t kLogGateMask = 0x3FFFu;  // 1 in 16384
 
 			// Thread-local batch size — up to this many hits aggregate in
 			// a thread's local counter before publishing to the global
@@ -569,11 +569,11 @@ namespace Patches::BSPreCulledObjectsPatchVR
 					return;
 				}
 
-				const auto hits   = mapHits.exchange(0, std::memory_order_relaxed);
+				const auto hits = mapHits.exchange(0, std::memory_order_relaxed);
 				const auto misses = mapMisses.exchange(0, std::memory_order_relaxed);
-				const auto ghost  = ghostMisses.exchange(0, std::memory_order_relaxed);
-				const auto real   = realMisses.exchange(0, std::memory_order_relaxed);
-				const auto total  = hits + misses;
+				const auto ghost = ghostMisses.exchange(0, std::memory_order_relaxed);
+				const auto real = realMisses.exchange(0, std::memory_order_relaxed);
+				const auto total = hits + misses;
 
 				if (total == 0) {
 					return;
@@ -649,16 +649,16 @@ namespace Patches::BSPreCulledObjectsPatchVR
 
 		void WriteAddToRainCullingGroup()
 		{
-			const auto     target = REL::Offset(0x27E0F60).address();
-			constexpr auto size   = 0x24C;
+			const auto target = REL::Offset(0x27E0F60).address();
+			constexpr auto size = 0x24C;
 			REL::safe_fill(target, REL::INT3, size);
 			stl::asm_jump(target, size, reinterpret_cast<std::uintptr_t>(AddToRainCullingGroup));
 		}
 
 		void WriteAddToShadowCullingGroup()
 		{
-			const auto     target = REL::Offset(0x27E12C0).address();
-			constexpr auto size   = 0x21B;
+			const auto target = REL::Offset(0x27E12C0).address();
+			constexpr auto size = 0x21B;
 			REL::safe_fill(target, REL::INT3, size);
 			stl::asm_jump(target, size, reinterpret_cast<std::uintptr_t>(AddToShadowCullingGroup));
 		}
@@ -676,12 +676,12 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		void WriteUpdateIDto3DMap()
 		{
 			constexpr std::size_t kPrologueSize = 5;
-			constexpr std::size_t kBufferSize   = kPrologueSize + 6 + 8;
+			constexpr std::size_t kBufferSize = kPrologueSize + 6 + 8;
 
 			const auto target = REL::Offset(0x27DF7B0).address();
 
 			auto& trampoline = F4SE::GetTrampoline();
-			auto* buffer     = static_cast<std::uint8_t*>(trampoline.allocate(kBufferSize));
+			auto* buffer = static_cast<std::uint8_t*>(trampoline.allocate(kBufferSize));
 
 			std::memcpy(buffer, reinterpret_cast<const void*>(target), kPrologueSize);
 
@@ -705,8 +705,8 @@ namespace Patches::BSPreCulledObjectsPatchVR
 
 		void WriteGet3DForIDCallHook()
 		{
-			const auto callSite   = REL::Offset(0x27E0675).address();
-			auto&      trampoline = F4SE::GetTrampoline();
+			const auto callSite = REL::Offset(0x27E0675).address();
+			auto& trampoline = F4SE::GetTrampoline();
 			OriginalGet3DForID =
 				reinterpret_cast<Get3DForID_t*>(
 					trampoline.write_call<5>(
