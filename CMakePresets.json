@@ -99,5 +99,12 @@
       "description": "If you are running CMake from the command line and not from an IDE, make sure to run 'vcvars64.bat' first. The default installed location of this is 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat'.",
       "name": "vs2022-ninja-windows-vcpkg"
     }
+  ],
+  "buildPresets": [
+    {
+      "name": "Release",
+      "configurePreset": "vs2022-windows-vcpkg",
+      "configuration": "Release"
+    }
   ]
 }

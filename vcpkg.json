@@ -13,7 +13,9 @@
     "frozen",
     {
       "name": "infoware",
-      "features": ["d3d"]
+      "features": [
+        "d3d"
+      ]
     },
     "magic-enum",
     "nowide",
@@ -29,5 +31,11 @@
     "zycore",
     "zydis"
   ],
-  "builtin-baseline": "36fb23307e10cc6ffcec566c46c4bb3f567c82c6"
+  "builtin-baseline": "d015e31e90838a4c9dfa3eed45979bc70d9357fc",
+  "overrides": [
+    {
+      "name": "srell",
+      "version": "3.010"
+    }
+  ]
 }
