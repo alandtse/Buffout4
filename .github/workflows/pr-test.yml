@@ -14,7 +14,7 @@ on:
       # Dependencies
       - 'vcpkg.json'
       - '.gitmodules'
-      - 'extern/**'
+      - 'external/**'
       # Build scripts
       - 'scripts/**'
       # CI workflows that affect build
