@@ -3,7 +3,9 @@
 #include "Patches/AchievementsPatch.h"
 #include "Patches/BSMTAManagerPatch.h"
 #include "Patches/BSPreCulledObjectsPatch.h"
+#include "Patches/BSPreCulledObjectsPatchVR.h"
 #include "Patches/BSTextureStreamerLocalHeapPatch.h"
+#include "Patches/FasterWorkshopPatch.h"
 #include "Patches/HavokMemorySystemPatch.h"
 #include "Patches/INISettingCollectionPatch.h"
 #include "Patches/InputSwitchPatch.h"
@@ -26,8 +28,12 @@ namespace Patches
 			BSMTAManagerPatch::Install();
 		}
 
-		if (REL::Module::IsF4() && *Settings::BSPreCulledObjects) {
-			BSPreCulledObjectsPatch::Install();
+		if (*Settings::BSPreCulledObjects) {
+			if (REL::Module::IsF4()) {
+				BSPreCulledObjectsPatch::Install();
+			} else if (REL::Module::IsVR()) {
+				BSPreCulledObjectsPatchVR::Install();
+			}
 		}
 		if (!REL::Module::IsNG() && *Settings::BSTextureStreamerLocalHeap) {
 			BSTextureStreamerLocalHeapPatch::Install();
@@ -60,8 +66,12 @@ namespace Patches
 			SmallBlockAllocatorPatch::Install();
 		}
 
-		if (REL::Module::IsF4() && *Settings::WorkshopMenu) {  // TODO: NG
-			WorkshopMenuPatch::Install();
+		if (*Settings::WorkshopMenu) {  // TODO: NG
+			if (REL::Module::IsF4()) {
+				WorkshopMenuPatch::Install();
+			} else if (REL::Module::IsVR()) {
+				FasterWorkshopPatch::Install();
+			}
 		}
 	}
 
@@ -69,6 +79,13 @@ namespace Patches
 	{
 		if (!REL::Module::IsNG() && *Settings::InputSwitch) {  // TODO: NG
 			InputSwitchPatch::PostInit();
+		}
+	}
+
+	void GameDataReady()
+	{
+		if (REL::Module::IsVR() && *Settings::WorkshopMenu) {
+			FasterWorkshopPatch::ClearMap();
 		}
 	}
 }

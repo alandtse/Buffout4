@@ -59,6 +59,7 @@ namespace
 		case F4SE::MessagingInterface::kGameDataReady:
 			{
 				Fixes::GameDataReady();
+				Patches::GameDataReady();
 			}
 			break;
 		}

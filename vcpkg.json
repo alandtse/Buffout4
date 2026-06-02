@@ -24,7 +24,6 @@
     "rapidcsv",
     "rsm-binary-io",
     "rsm-mmio",
-    "srell",
     "spdlog",
     "tbb",
     "tomlplusplus",
