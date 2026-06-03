@@ -59,4 +59,13 @@ cmake --build buildvr --config Release
 * PDB requires `msdia140.dll` distributed under [Visual Studio C++ Redistributable](https://docs.microsoft.com/en-us/visualstudio/releases/2022/redistribution#dia-sdk). [PDB Handler](src/Crash/PDB/PdbHandler.cpp) derived from StackOverflow code.
 
 # License
-[MIT](LICENSE)
+[GPL-3.0-or-later](LICENSE) WITH [Modding Exception AND GPL-3.0 Linking Exception (with Corresponding Source)](EXCEPTIONS.md).
+
+Specifically, the Modded Code includes:
+
+* Fallout 4 (and its variants, including Fallout 4 VR)
+
+The Modding Libraries include:
+
+* [F4SE / F4SEVR](https://f4se.silverlock.org/)
+* CommonLibF4 (and variants)

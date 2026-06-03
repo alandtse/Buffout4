@@ -1,3 +1,6 @@
+// VR port derived from Addictol's FasterWorkshop module.
+// https://github.com/Dear-Modding-FO4/Addictol  © perchik71 / Dear Modding FO4, GPLv3.
+
 #include "Patches/FasterWorkshopPatch.h"
 
 #define WIN32_LEAN_AND_MEAN
