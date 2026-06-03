@@ -14,7 +14,7 @@ namespace Fixes::PipboyLightInvFix
 
 				test(rbx, rbx);
 				jz("returnFunc");
-				mov(rcx, dword[rbx + a_rbx_offset]);
+				mov(rcx, qword[rbx + a_rbx_offset]);
 				test(rcx, rcx);
 				jz("returnFunc");
 				test(rax, rax);
