@@ -55,8 +55,8 @@ namespace Fixes::EscapeFreeze
 		}
 
 		// members
-		std::atomic<std::uint32_t> _owningThread{ 0 };        // 0
-		std::atomic<std::uint32_t> _lockCount{ 0 };           // 4
+		std::atomic<std::uint32_t> _owningThread{ 0 };  // 0
+		std::atomic<std::uint32_t> _lockCount{ 0 };     // 4
 	};
 
 	static std::vector<Spinlock*> spinlocks{};
