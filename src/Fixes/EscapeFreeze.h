@@ -1,6 +1,6 @@
 #pragma once
-// based on details from https://www.nexusmods.com/fallout4/mods/75216?tab=description
-// essentially, this will manually reset a lock on a threshold of 8.
+// Based on details from https://www.nexusmods.com/fallout4/mods/75216?tab=description.
+// Replaces the problematic engine lock used by the VR VATS path.
 #include <atomic>
 
 namespace Fixes::EscapeFreeze
@@ -34,24 +34,29 @@ namespace Fixes::EscapeFreeze
 	public:
 		void lock()
 		{
-			_lockCount++;
+			_lockCount.fetch_add(1, std::memory_order_relaxed);
 			while (atomic_flag.test_and_set(std::memory_order_acquire)) {
 				Sleep(1);
 			}
-			_owningThread = REX::W32::GetCurrentThreadId();
+			_owningThread.store(REX::W32::GetCurrentThreadId(), std::memory_order_relaxed);
 		}
 		void unlock()
 		{
-			if (_owningThread == REX::W32::GetCurrentThreadId()) {
+			if (_owningThread.load(std::memory_order_relaxed) == REX::W32::GetCurrentThreadId()) {
+				// Publish the lock as available only after all owner bookkeeping is
+				// complete. Clearing the flag first allowed a waiter to acquire it
+				// and publish its thread ID, after which the previous owner could
+				// overwrite that ID with zero. The new owner then refused to
+				// unlock, permanently stalling every subsequent caller.
+				_lockCount.fetch_sub(1, std::memory_order_relaxed);
+				_owningThread.store(0, std::memory_order_relaxed);
 				atomic_flag.clear(std::memory_order_release);
-				_owningThread = 0;
-				_lockCount--;
 			}
 		}
 
 		// members
-		std::atomic<std::uint32_t> _owningThread{ 0 };        // 0
-		volatile std::atomic<std::uint32_t> _lockCount{ 0 };  // 4
+		std::atomic<std::uint32_t> _owningThread{ 0 };  // 0
+		std::atomic<std::uint32_t> _lockCount{ 0 };     // 4
 	};
 
 	static std::vector<Spinlock*> spinlocks{};
