@@ -43,15 +43,9 @@ git submodule init
 git submodule update
 ```
 
-### Fallout 4
 ```
-cmake --preset vs2022-windows-vcpkg
-cmake --build build --config Release
-```
-### VR
-```
-cmake --preset vs2022-windows-vcpkg-vr
-cmake --build buildvr --config Release
+cmake --preset vs2022-ninja-windows-vcpkg
+cmake --build build --preset Release-Ninja
 ```
 
 # Credits

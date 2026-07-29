@@ -78,17 +78,6 @@
       "toolset": "v143"
     },
     {
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "cl"
-      },
-      "architecture": {
-        "strategy": "external",
-        "value": "x64"
-      },
-      "toolset": {
-        "strategy": "external",
-        "value": "v143,host=x64"
-      },
       "generator": "Ninja",
       "inherits": [
         "vs2022-flags",
@@ -96,7 +85,7 @@
         "vcpkg",
         "windows"
       ],
-      "description": "If you are running CMake from the command line and not from an IDE, make sure to run 'vcvars64.bat' first. The default installed location of this is 'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat'.",
+      "description": "Uses CMake's automatic MSVC toolchain detection, so it works from a plain shell (no vcvars64.bat needed) and on CI runners where the 'Visual Studio 17 2022' generator can fail to locate a VS instance.",
       "name": "vs2022-ninja-windows-vcpkg"
     }
   ],
@@ -104,6 +93,11 @@
     {
       "name": "Release",
       "configurePreset": "vs2022-windows-vcpkg",
+      "configuration": "Release"
+    },
+    {
+      "name": "Release-Ninja",
+      "configurePreset": "vs2022-ninja-windows-vcpkg",
       "configuration": "Release"
     }
   ]

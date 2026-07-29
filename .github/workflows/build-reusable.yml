@@ -13,12 +13,12 @@ on:
         description: 'CMake configure preset'
         type: string
         required: false
-        default: 'vs2022-windows-vcpkg'
+        default: 'vs2022-ninja-windows-vcpkg'
       build-preset:
         description: 'CMake build preset'
         type: string
         required: false
-        default: 'Release'
+        default: 'Release-Ninja'
       version:
         description: 'Version string for the build'
         type: string

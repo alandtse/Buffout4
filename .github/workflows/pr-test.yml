@@ -26,6 +26,6 @@ jobs:
     name: Test Build
     uses: ./.github/workflows/build-reusable.yml
     with:
-      configure-preset: vs2022-windows-vcpkg
-      build-preset: Release
+      configure-preset: vs2022-ninja-windows-vcpkg
+      build-preset: Release-Ninja
       upload-artifact: false

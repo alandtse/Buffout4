@@ -56,8 +56,8 @@ jobs:
       (needs.semantic-release.outputs.new_release_published == 'true' || github.event_name == 'workflow_dispatch')
     uses: ./.github/workflows/build-reusable.yml
     with:
-      configure-preset: vs2022-windows-vcpkg
-      build-preset: Release
+      configure-preset: vs2022-ninja-windows-vcpkg
+      build-preset: Release-Ninja
       version: ${{ needs.semantic-release.outputs.new_release_version || inputs.version }}
       upload-artifact: true
       ref: master
