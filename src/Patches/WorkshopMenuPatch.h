@@ -464,7 +464,7 @@ namespace Patches::WorkshopMenuPatch
 			switch (a_cobj.createdItem->GetFormType()) {
 			case RE::ENUM_FORM_ID::kFLST:
 				for (const auto& flst = static_cast<RE::BGSListForm&>(*a_cobj.createdItem);
-					const auto form : flst.arrayOfForms) {
+					 const auto form : flst.arrayOfForms) {
 					make(form).sourceFormListRecipe = &a_cobj;
 				}
 				break;
