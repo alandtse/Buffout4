@@ -2,8 +2,8 @@
 
 It's like buffout but for the engine. This is a fork for VR.
 
-- [Fallout4](https://www.nexusmods.com/fallout4/mods/47359)
-- [Fallout4 VR](https://www.nexusmods.com/fallout4/mods/64880)
+- [Fallout 4](https://www.nexusmods.com/fallout4/mods/47359)
+- [Fallout 4 VR](https://www.nexusmods.com/fallout4/mods/64880)
 
 # Build Dependencies
 
@@ -15,7 +15,7 @@ It's like buffout but for the engine. This is a fork for VR.
   - Stacktrace
 - [CommonLibF4](https://github.com/Ryan-rsm-McKenzie/CommonLibF4)
 - [CommonLibF4 VR enabled](https://github.com/alandtse/CommonLibF4)
-  - Add this as as an environment variable `CommonLibF4Path` or use the submodule in /external
+  - Add this as an environment variable `CommonLibF4Path` or use the submodule in /external
 - [fmt](https://github.com/fmtlib/fmt)
 - [Frozen](https://github.com/serge-sans-paille/frozen)
 - [infoware](https://github.com/ThePhD/infoware)
@@ -48,7 +48,7 @@ git submodule update
 
 ```
 cmake --preset vs2022-ninja-windows-vcpkg
-cmake --build build --preset Release-Ninja
+cmake --build --preset Release-Ninja
 ```
 
 # Credits

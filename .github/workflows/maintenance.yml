@@ -19,11 +19,12 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install clang-format
-        run: pip install clang-format==22.1.5 # keep in sync with .pre-commit-config.yaml
+      - name: Install pre-commit
+        run: pip install pre-commit
 
       - name: Run clang-format
-        run: find -type f \( -name *.h -o -name *.cpp \) | xargs clang-format -style=file -i
+        run: pre-commit run --all-files clang-format --show-diff-on-failure
+        continue-on-error: true # formats in place; git-auto-commit-action below commits any changes
 
       - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
