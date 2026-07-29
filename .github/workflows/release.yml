@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to upload to Nexus (leave empty for latest release)'
+        description: "Version to upload to Nexus (leave empty for latest release)"
         type: string
         required: false
 

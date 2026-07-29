@@ -52,11 +52,7 @@
         "CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX /external:anglebrackets /external:W0"
       },
       "generator": "Visual Studio 16 2019",
-      "inherits": [
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
+      "inherits": ["cmake-dev", "vcpkg", "windows"],
       "name": "vs2019-windows-vcpkg"
     },
     {
@@ -68,23 +64,13 @@
     },
     {
       "generator": "Visual Studio 17 2022",
-      "inherits": [
-        "vs2022-flags",
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
+      "inherits": ["vs2022-flags", "cmake-dev", "vcpkg", "windows"],
       "name": "vs2022-windows-vcpkg",
       "toolset": "v143"
     },
     {
       "generator": "Ninja",
-      "inherits": [
-        "vs2022-flags",
-        "cmake-dev",
-        "vcpkg",
-        "windows"
-      ],
+      "inherits": ["vs2022-flags", "cmake-dev", "vcpkg", "windows"],
       "description": "Uses CMake's automatic MSVC toolchain detection, so it works from a plain shell (no vcvars64.bat needed) and on CI runners where the 'Visual Studio 17 2022' generator can fail to locate a VS instance.",
       "name": "vs2022-ninja-windows-vcpkg"
     }

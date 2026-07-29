@@ -4,22 +4,22 @@ on:
   pull_request:
     paths:
       # Source files
-      - 'src/**/*.cpp'
-      - 'src/**/*.h'
-      - 'src/**/*.hpp'
+      - "src/**/*.cpp"
+      - "src/**/*.h"
+      - "src/**/*.hpp"
       # Build configuration
-      - 'CMakeLists.txt'
-      - 'cmake/**'
-      - 'CMakePresets.json'
+      - "CMakeLists.txt"
+      - "cmake/**"
+      - "CMakePresets.json"
       # Dependencies
-      - 'vcpkg.json'
-      - '.gitmodules'
-      - 'external/**'
+      - "vcpkg.json"
+      - ".gitmodules"
+      - "external/**"
       # Build scripts
-      - 'scripts/**'
+      - "scripts/**"
       # CI workflows that affect build
-      - '.github/workflows/build-reusable.yml'
-      - '.github/workflows/pr-test.yml'
+      - ".github/workflows/build-reusable.yml"
+      - ".github/workflows/pr-test.yml"
 
 jobs:
   test-build:

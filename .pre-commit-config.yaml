@@ -5,8 +5,8 @@ ci:
 
     Applied by pre-commit.ci
   autofix_prs: true
-  autoupdate_branch: ''
-  autoupdate_commit_msg: 'ci(deps): update pre-commit hooks'
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "ci(deps): update pre-commit hooks"
   autoupdate_schedule: weekly
   skip: []
   submodules: false

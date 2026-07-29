@@ -10,39 +10,39 @@ on:
   workflow_call:
     inputs:
       configure-preset:
-        description: 'CMake configure preset'
+        description: "CMake configure preset"
         type: string
         required: false
-        default: 'vs2022-ninja-windows-vcpkg'
+        default: "vs2022-ninja-windows-vcpkg"
       build-preset:
-        description: 'CMake build preset'
+        description: "CMake build preset"
         type: string
         required: false
-        default: 'Release-Ninja'
+        default: "Release-Ninja"
       version:
-        description: 'Version string for the build'
+        description: "Version string for the build"
         type: string
         required: false
-        default: ''
+        default: ""
       upload-artifact:
-        description: 'Whether to upload build artifact'
+        description: "Whether to upload build artifact"
         type: boolean
         required: false
         default: false
       ref:
-        description: 'Git ref to checkout'
+        description: "Git ref to checkout"
         type: string
         required: false
-        default: ''
+        default: ""
     outputs:
       artifact-name:
-        description: 'Name of the uploaded artifact'
+        description: "Name of the uploaded artifact"
         value: ${{ jobs.build.outputs.artifact-name }}
       artifact-path:
-        description: 'Path to the built artifact'
+        description: "Path to the built artifact"
         value: ${{ jobs.build.outputs.artifact-path }}
       normalized_version:
-        description: 'Normalized version string (v-prefix stripped)'
+        description: "Normalized version string (v-prefix stripped)"
         value: ${{ jobs.build.outputs.normalized_version }}
 
 jobs:
