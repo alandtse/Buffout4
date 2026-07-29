@@ -10,18 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'alandtse'
     permissions:
-      contents: write   # git-auto-commit pushes the formatting commit
+      contents: write # git-auto-commit pushes the formatting commit
 
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-    - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-      with:
-        python-version: '3.9'
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.9"
 
-    - name: Run clang-format
-      run: find -type f \( -name *.h -o -name *.cpp \) | xargs clang-format-16 -style=file -i
+      - name: Install pre-commit
+        run: pip install pre-commit
 
-    - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
-      with:
-        commit_message: "style: maintenance"
+      - name: Run clang-format
+        run: pre-commit run --all-files clang-format --show-diff-on-failure
+        continue-on-error: true # formats in place; git-auto-commit-action below commits any changes
+
+      - uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
+        with:
+          commit_message: "style: maintenance"
