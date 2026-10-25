@@ -228,6 +228,7 @@ namespace Crash
 					EXCEPTION_CASE(EXCEPTION_PRIV_INSTRUCTION);
 					EXCEPTION_CASE(EXCEPTION_SINGLE_STEP);
 					EXCEPTION_CASE(EXCEPTION_STACK_OVERFLOW);
+					EXCEPTION_CASE(STATUS_INVALID_CRUNTIME_PARAMETER);
 				default:
 					return ""sv;
 				}
@@ -657,6 +658,44 @@ namespace Crash
 			::SetUnhandledExceptionFilter(reinterpret_cast<::LPTOP_LEVEL_EXCEPTION_FILTER>(&UnhandledExceptions));
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
+
+		using invalid_parameter_handler_t = void(__cdecl*)(const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, std::uintptr_t);
+		using set_invalid_parameter_handler_t = invalid_parameter_handler_t(__cdecl*)(invalid_parameter_handler_t);
+
+		// The default CRT invalid parameter handler terminates via __fastfail, which bypasses
+		// vectored and unhandled exception filters. Raise a regular SEH exception instead so it
+		// reaches UnhandledExceptions and produces a crash log.
+		void __cdecl InvalidParameterHandler(const wchar_t*, const wchar_t*, const wchar_t*, unsigned int, std::uintptr_t)
+		{
+			::RaiseException(STATUS_INVALID_CRUNTIME_PARAMETER, EXCEPTION_NONCONTINUABLE, 0, nullptr);
+		}
+
+		void InstallInvalidParameterHandlers()
+		{
+			// each CRT keeps its own handler: the game uses msvcr110 (ucrtbase on NG), most plugins use ucrtbase
+			for (const auto name : { "msvcr110.dll", "ucrtbase.dll" }) {
+				const auto crt = ::GetModuleHandleA(name);
+				if (!crt) {
+					continue;
+				}
+
+				const auto setHandler = reinterpret_cast<set_invalid_parameter_handler_t>(
+					::GetProcAddress(crt, "_set_invalid_parameter_handler"));
+				if (!setHandler) {
+					logger::warn("failed to find _set_invalid_parameter_handler in {}"sv, name);
+					continue;
+				}
+
+				const auto previous = setHandler(&InvalidParameterHandler);
+				if (previous && previous != &InvalidParameterHandler) {
+					// respect a handler that someone else already installed
+					setHandler(previous);
+					logger::info("skipped invalid parameter handler for {}, one is already installed"sv, name);
+					continue;
+				}
+				logger::info("installed invalid parameter handler for {}"sv, name);
+			}
+		}
 	}  // namespace
 
 	void Install()
@@ -666,6 +705,7 @@ namespace Crash
 		if (success == nullptr) {
 			util::report_and_fail("failed to install vectored exception handler"sv);
 		}
+		InstallInvalidParameterHandlers();
 		logger::info("installed crash handlers"sv);
 	}
 }  // namespace Crash
