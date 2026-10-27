@@ -1,6 +1,7 @@
 #include "Patches/BSPreCulledObjectsPatchVR.h"
 
 #include <array>
+#include <mutex>
 #include <shared_mutex>
 
 namespace Patches::BSPreCulledObjectsPatchVR
@@ -55,23 +56,31 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				return nullptr;
 			}
 
-			void insert_or_assign(std::uint32_t a_id, RE::NiAVObject* a_obj)
+			// Both return the reference that left the map, so the caller can
+			// release it (and possibly run the object's destructor) after
+			// dropping the shard lock.
+			[[nodiscard]] value_type::second_type insert_or_assign(std::uint32_t a_id, RE::NiAVObject* a_obj)
 			{
 				const auto idx = SplitID(a_id).second;
 				if (idx == 0x00 || idx == 0xFD) [[likely]] {
-					insert_special(a_id, a_obj);
+					return insert_special(a_id, a_obj);
 				} else {
-					insert_generic(a_id, a_obj);
+					return insert_generic(a_id, a_obj);
 				}
 			}
 
-			void erase(std::uint32_t a_id) noexcept
+			[[nodiscard]] value_type::second_type erase(std::uint32_t a_id) noexcept
 			{
 				const auto idx = SplitID(a_id).second;
 				if (idx == 0x00 || idx == 0xFD) [[likely]] {
-					_special.erase(a_id);
+					value_type::second_type removed;
+					if (const auto it = _special.find(a_id); it != _special.end()) {
+						removed = it->second;
+						_special.erase(it);
+					}
+					return removed;
 				} else {
-					erase_generic(a_id);
+					return erase_generic(a_id);
 				}
 			}
 
@@ -89,23 +98,26 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				}
 			};
 
-			void erase_generic(std::uint32_t a_id) noexcept
+			[[nodiscard]] value_type::second_type erase_generic(std::uint32_t a_id) noexcept
 			{
+				value_type::second_type removed;
 				const auto [base, idx] = SplitID(a_id);
 				const auto it = _generic.find(base);
 				if (it != _generic.end()) [[likely]] {
 					auto& objs = it->second;
 					const auto rm = std::lower_bound(objs.begin(), objs.end(), a_id, less_t{});
 					if (rm != objs.end() && rm->first == a_id) {
+						removed = rm->second;
 						objs.erase(rm);
 						if (objs.empty()) {
 							_generic.erase(it);
 						}
 					}
 				}
+				return removed;
 			}
 
-			void insert_generic(std::uint32_t a_id, RE::NiAVObject* a_obj)
+			[[nodiscard]] value_type::second_type insert_generic(std::uint32_t a_id, RE::NiAVObject* a_obj)
 			{
 				const auto base = SplitID(a_id).first;
 				auto& objs = [&]() -> container_type& {
@@ -125,21 +137,27 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				// sorted. O(n) shift instead of the PC patch's O(n log n)
 				// re-sort after every insertion.
 				const auto it = std::lower_bound(objs.begin(), objs.end(), a_id, less_t{});
+				value_type::second_type displaced;
 				if (it != objs.end() && it->first == a_id) [[unlikely]] {
+					displaced = it->second;
 					it->second.reset(a_obj);
 				} else {
 					objs.emplace(it, a_id, a_obj);
 				}
+				return displaced;
 			}
 
-			void insert_special(std::uint32_t a_id, RE::NiAVObject* a_obj)
+			[[nodiscard]] value_type::second_type insert_special(std::uint32_t a_id, RE::NiAVObject* a_obj)
 			{
+				value_type::second_type displaced;
 				const auto it = _special.find(a_id);
 				if (it != _special.end()) {
+					displaced = it->second;
 					it->second.reset(a_obj);
 				} else {
 					_special.emplace(a_id, a_obj);
 				}
+				return displaced;
 			}
 
 			robin_hood::unordered_flat_map<
@@ -188,9 +206,11 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			return (a_formID & 0x00FFFFFF) & (kShardCount - 1);
 		}
 
-		struct Shard
+		// Padded so neighbouring shards' lock words never share a cache line.
+		struct alignas(64) Shard
 		{
-			mutable std::shared_mutex lock;
+			mutable std::shared_mutex lock;  // readers (shared) and map edits (exclusive)
+			std::recursive_mutex writer;     // orders whole updates; never taken by readers
 			IDTo3DMap map;
 		};
 
@@ -253,15 +273,27 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			void MapInsertOrAssign(std::uint32_t a_id, RE::NiAVObject* a_obj)
 			{
 				auto& shard = _shards[ShardIndex(a_id)];
-				std::unique_lock<std::shared_mutex> lk(shard.lock);
-				shard.map.insert_or_assign(a_id, a_obj);
+				RE::NiPointer<RE::NiAVObject> displaced;
+				{
+					std::unique_lock<std::shared_mutex> lk(shard.lock);
+					displaced = shard.map.insert_or_assign(a_id, a_obj);
+				}
 			}
 
 			void MapErase(std::uint32_t a_id)
 			{
 				auto& shard = _shards[ShardIndex(a_id)];
-				std::unique_lock<std::shared_mutex> lk(shard.lock);
-				shard.map.erase(a_id);
+				RE::NiPointer<RE::NiAVObject> removed;
+				{
+					std::unique_lock<std::shared_mutex> lk(shard.lock);
+					removed = shard.map.erase(a_id);
+				}
+			}
+
+			// Serialises a complete update (stock table + our map) for one id.
+			[[nodiscard]] std::recursive_mutex& WriterLock(std::uint32_t a_id) noexcept
+			{
+				return _shards[ShardIndex(a_id)].writer;
 			}
 
 			// ---- Stock engine bridges ---- //
@@ -280,6 +312,22 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			{
 				return _preCulledDynamicShadowObjects;
 			}
+
+			// Stock pre-culled ID arrays (rain: 8-byte records, shadow: 4-byte
+			// records; the form ID is the first dword) and the lock the stock
+			// rain/shadow functions hold while walking them, verified in
+			// FUN_1427E0F60 / FUN_1427E12C0.
+			struct IDArray
+			{
+				const std::byte* data;   // 00
+				std::uint32_t capacity;  // 08
+				std::uint32_t pad0C;     // 0C
+				std::uint32_t size;      // 10
+			};
+
+			[[nodiscard]] RE::BSReadWriteLock& PreCulledIDLock() const noexcept { return *_preCulledIDLock; }
+			[[nodiscard]] const IDArray& PreCulledRainIDs() const noexcept { return *_preCulledRainIDs; }
+			[[nodiscard]] const IDArray& PreCulledShadowIDs() const noexcept { return *_preCulledShadowIDs; }
 
 			// Cached binary value of the bUsePreCulledObjects INI setting
 			// (DAT_14391D830). VR's stock UpdateIDto3DMap reads this exact
@@ -308,6 +356,15 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			const PreCulledObjects_t*& _preCulledDynamicShadowObjects{
 				*reinterpret_cast<const PreCulledObjects_t**>(REL::Offset(0x6878B50).address())
 			};
+			RE::BSReadWriteLock* const _preCulledIDLock{
+				reinterpret_cast<RE::BSReadWriteLock*>(REL::Offset(0x6878AD8).address())
+			};
+			const IDArray* const _preCulledRainIDs{
+				reinterpret_cast<const IDArray*>(REL::Offset(0x6878B00).address())
+			};
+			const IDArray* const _preCulledShadowIDs{
+				reinterpret_cast<const IDArray*>(REL::Offset(0x6878B38).address())
+			};
 			const std::uint8_t* const _usePreCulledObjectsCachedBool{
 				reinterpret_cast<const std::uint8_t*>(REL::Offset(0x391D830).address())
 			};
@@ -318,12 +375,43 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		// ----------------------------------------------------------------
 		// Hook bodies.
 		//
-		// VR's hooked rain/shadow paths only need to walk the ObjectRecord
-		// arena — there are no separate PreCulled*ID arrays to cross-check
-		// against. Match Buffout4 PC's DoAddToCullingGroup shape (filter
-		// per record, call the stock AddToCullingGroup worker) but with
-		// VR's per-record shadowcaster check.
+		// Like the PC patch, each replacement does both passes of the stock
+		// function: the pre-culled ID array (precombined/previs objects,
+		// resolved through the ID map) and then the dynamic ObjectRecord
+		// arena, with VR's per-record shadowcaster check on the rain path.
 		// ----------------------------------------------------------------
+
+		// Resolves an id the way the hooked Get3DForID does (defined below).
+		[[nodiscard]] RE::NiAVObject* LookupPreCulled3D(std::uint32_t a_id);
+
+		// Stock ID pass: look each id up, keep objects that have a bound (or
+		// the always-add flag 0x800), are not hidden (flag 0x1) and, for rain,
+		// do not carry flag bit 40. Runs under the stock ID lock, which keeps
+		// the stock table's reference to each object alive while we use it.
+		template <std::size_t STRIDE>
+		void AddPreCulledIDs(void* a_cullingGroup, const IDTo3DHandler::IDArray& a_ids, bool a_rain)
+		{
+			auto& handler = IDTo3DHandler::GetSingleton();
+			RE::BSAutoReadLock lock{ handler.PreCulledIDLock() };
+			if (!a_ids.data) {
+				return;
+			}
+			for (std::uint32_t i = 0; i < a_ids.size; ++i) {
+				const auto id = *reinterpret_cast<const std::uint32_t*>(a_ids.data + i * STRIDE);
+				const auto obj = LookupPreCulled3D(id);
+				if (!obj) {
+					continue;
+				}
+				const auto raw = reinterpret_cast<const std::byte*>(obj);
+				const auto flags = *reinterpret_cast<const std::uint64_t*>(raw + 0x108);
+				const auto radius = *reinterpret_cast<const float*>(raw + 0xBC);
+				if ((((flags >> 0xB) & 1) != 0 || radius != 0.0F) &&
+					(flags & 1) == 0 &&
+					(!a_rain || ((flags >> 0x28) & 1) == 0)) {
+					handler.AddToCullingGroup(a_cullingGroup, obj, obj->worldBound, 0);
+				}
+			}
+		}
 
 		// Hand-rolled VR arena walk. Mirrors the inlined iterator logic
 		// in FUN_1427E0F60: start at begin_, advance 16 bytes per record,
@@ -411,6 +499,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		void AddToRainCullingGroup(void* a_cullingGroup)
 		{
 			auto& handler = IDTo3DHandler::GetSingleton();
+			AddPreCulledIDs<8>(a_cullingGroup, handler.PreCulledRainIDs(), true);
 			ForEachArenaRecord(
 				handler.PreCulledDynamicRainObjects(),
 				[&](const RE::BSPreCulledObjects::ObjectRecord& a_record) {
@@ -434,6 +523,7 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		void AddToShadowCullingGroup(void* a_cullingGroup)
 		{
 			auto& handler = IDTo3DHandler::GetSingleton();
+			AddPreCulledIDs<4>(a_cullingGroup, handler.PreCulledShadowIDs(), false);
 			ForEachArenaRecord(
 				handler.PreCulledDynamicShadowObjects(),
 				[&](const RE::BSPreCulledObjects::ObjectRecord& a_record) {
@@ -459,24 +549,32 @@ namespace Patches::BSPreCulledObjectsPatchVR
 
 		void UpdateIDto3DMap(std::uint32_t a_id, RE::NiAVObject* a_obj)
 		{
-			// 1. Call the original to keep the stock hash table
-			//    populated for the un-hooked main AddToCullingGroup path.
-			if (OriginalUpdateIDto3DMap) {
-				OriginalUpdateIDto3DMap(a_id, a_obj);
-			}
-
-			// 2. Also write to our fast sharded map, used by the hooked
-			//    rain/shadow arenas and the Get3DForID call-site hook.
 			auto& handler = IDTo3DHandler::GetSingleton();
 			if (!handler.UsePreCulledObjects()) {
+				if (OriginalUpdateIDto3DMap) {
+					OriginalUpdateIDto3DMap(a_id, a_obj);
+				}
 				return;
 			}
+
+			// Keep the stock table (for un-hooked paths) and our map (for the
+			// hooked rain/shadow passes and Get3DForID) in step. The writer
+			// lock orders concurrent updates of the same id; readers never
+			// take it, so the stock lock taken inside the original cannot
+			// deadlock against them.
+			std::scoped_lock writer{ handler.WriterLock(a_id) };
+
+			// Update ours first, for inserts and removals alike: until the
+			// original drops the stock reference to a replaced or removed
+			// object, an object a reader just fetched from our map stays alive
+			// (readers hold the stock lock the original takes for writing).
 			if (a_obj) {
 				handler.MapInsertOrAssign(a_id, a_obj);
 			} else {
 				handler.MapErase(a_id);
-				// RemoveVisibilityCallBackForID already called by the
-				// original above — double-call is idempotent.
+			}
+			if (OriginalUpdateIDto3DMap) {
+				OriginalUpdateIDto3DMap(a_id, a_obj);
 			}
 		}
 
@@ -503,9 +601,11 @@ namespace Patches::BSPreCulledObjectsPatchVR
 		// cacheline ping-pong by that factor.
 		struct PerfCounters
 		{
-			std::atomic<std::uint64_t> mapHits{ 0 };
-			std::atomic<std::uint64_t> mapMisses{ 0 };
-			std::atomic<std::uint64_t> ghostMisses{ 0 };
+			// Hits and misses are bumped from every culling thread; keep them
+			// on separate cache lines.
+			alignas(64) std::atomic<std::uint64_t> mapHits{ 0 };
+			alignas(64) std::atomic<std::uint64_t> mapMisses{ 0 };
+			alignas(64) std::atomic<std::uint64_t> ghostMisses{ 0 };
 			std::atomic<std::uint64_t> realMisses{ 0 };
 			std::atomic<std::int64_t> lastLogTime{ 0 };  // steady_clock ns
 
@@ -588,6 +688,16 @@ namespace Patches::BSPreCulledObjectsPatchVR
 			}
 		};
 
+		RE::NiAVObject* LookupPreCulled3D(std::uint32_t a_id)
+		{
+			// Our map is only maintained while bUsePreCulledObjects is set;
+			// otherwise use the stock table, as the stock rain/shadow code does.
+			auto& handler = IDTo3DHandler::GetSingleton();
+			return handler.UsePreCulledObjects() || !OriginalGet3DForID ?
+			           handler.MapFindOne(a_id) :
+			           OriginalGet3DForID(a_id);
+		}
+
 		RE::NiAVObject* HookedGet3DForID(std::uint32_t a_formID)
 		{
 			auto& handler = IDTo3DHandler::GetSingleton();
@@ -617,28 +727,27 @@ namespace Patches::BSPreCulledObjectsPatchVR
 				return obj;
 			}
 
-			// Map miss — fast path returns nullptr directly. Empirically
-			// safe: the map is a strict superset of the stock table.
-			// Every 1-in-4096 miss still calls orig as a sentinel so
-			// regressions (new mods, load-order changes) surface in the
-			// log as a non-zero real count.
-			const auto prevMisses =
-				counters.mapMisses.fetch_add(1, std::memory_order_relaxed);
-			if ((prevMisses & PerfCounters::kSentinelMask) == 0) [[unlikely]] {
+			// Map miss — fast path returns nullptr directly; the map mirrors
+			// every stock update. Misses are counted per thread and published
+			// in batches like hits; every 4096th miss on a thread still calls
+			// the original as a sentinel so a divergence shows up in the log
+			// as a non-zero real count.
+			thread_local std::uint32_t tlsMisses = 0;
+			const auto localMisses = ++tlsMisses;
+			if (localMisses % PerfCounters::kBatchSize == 0) {
+				const auto prevMisses = counters.mapMisses.fetch_add(PerfCounters::kBatchSize, std::memory_order_relaxed);
+				if ((prevMisses & PerfCounters::kLogGateMask) == 0) [[unlikely]] {
+					counters.maybeLog();
+				}
+			}
+			if ((localMisses & PerfCounters::kSentinelMask) == 0) [[unlikely]] {
 				auto* origResult = OriginalGet3DForID(a_formID);
 				if (origResult) {
 					counters.realMisses.fetch_add(1, std::memory_order_relaxed);
 				} else {
 					counters.ghostMisses.fetch_add(1, std::memory_order_relaxed);
 				}
-				if ((prevMisses & PerfCounters::kLogGateMask) == 0) [[unlikely]] {
-					counters.maybeLog();
-				}
 				return origResult;
-			}
-
-			if ((prevMisses & PerfCounters::kLogGateMask) == 0) [[unlikely]] {
-				counters.maybeLog();
 			}
 			return nullptr;
 		}
