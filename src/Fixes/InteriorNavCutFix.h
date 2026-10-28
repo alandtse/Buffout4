@@ -2,10 +2,6 @@
 // used in Interior NavCut Fix https://www.nexusmods.com/fallout4/mods/72904?tab=description
 // Fixes the engine bug that causes workshop navmesh cuts to persist throughout all interior cells.
 // https://simsettlements.com/site/index.php?threads/major-new-fallout-4-bug-discovered-shared-interior-cell-navcutting.26755/
-#ifndef NO_PPL
-#	include <ppl.h>
-#endif
-
 namespace Fixes::InteriorNavCutFix
 {
 	inline static bool PerfCounterFreqAcquired = false;
@@ -92,42 +88,40 @@ namespace Fixes::InteriorNavCutFix
 		auto perfTimer = StartPerfCounter();
 
 		auto playerCell = RE::PlayerCharacter::GetSingleton()->parentCell;
-		//logger::info("Player cell is: {:08X}", playerCell->formID);
 
-		const auto& [map, lock] = RE::TESForm::GetAllForms();
-		RE::BSAutoReadLock l{ lock };
-
-#ifdef NO_PPL
-		for (const RE::BSTTuple<const uint32_t, RE::TESForm*>& ele : *map) {
-#else
-				concurrency::parallel_for_each(map->begin(), map->end(), [&](RE::BSTTuple<const uint32_t, RE::TESForm*> ele) {
-#endif
-			RE::TESObjectCELL* cell = ele.second->As<RE::TESObjectCELL>();
-
-			if (cell) {
-				std::vector<RE::NiPointer<RE::TESObjectREFR>> refs;
-				cell->spinLock.lock();
-				auto& references = cell->references;
-
-				for (uint32_t i = 0; i < references.size(); i++) {
-					refs.push_back(references[i]);
-				}
-				cell->spinLock.unlock();
-
-				for (auto& ref : refs) {
-					if (ref != nullptr && ref->parentCell != nullptr) {
-						DoUpdateNavmesh(ref.get(), ref->parentCell == playerCell);
+		// Snapshot interior references under the form-map lock, then release it
+		// before calling into the navmesh code. The engine's navmesh updates are
+		// not safe to run concurrently, so they run on this (main) thread only.
+		std::vector<RE::NiPointer<RE::TESObjectREFR>> refs;
+		{
+			const auto& [map, lock] = RE::TESForm::GetAllForms();
+			RE::BSAutoReadLock l{ lock };
+			if (map) {
+				for (const auto& ele : *map) {
+					const auto cell = ele.second ? ele.second->As<RE::TESObjectCELL>() : nullptr;
+					if (!cell || !cell->cellFlags.any(RE::TESObjectCELL::Flag::kInterior)) {
+						continue;
 					}
+					cell->spinLock.lock();
+					for (const auto& ref : cell->references) {
+						if (ref) {
+							refs.push_back(ref);
+						}
+					}
+					cell->spinLock.unlock();
 				}
 			}
 		}
-#ifndef NO_PPL
-				);
-#endif
 
-				RE::DynamicNavmesh::GetSingleton()->ForceUpdate();
+		for (auto& ref : refs) {
+			if (ref->parentCell != nullptr) {
+				DoUpdateNavmesh(ref.get(), ref->parentCell == playerCell);
+			}
+		}
 
-				logger::info("Finished load-time navmesh updates in {:.0f}ms", GetPerfCounterMS(perfTimer));
+		RE::DynamicNavmesh::GetSingleton()->ForceUpdate();
+
+		logger::info("Finished load-time navmesh updates for {} interior references in {:.0f}ms", refs.size(), GetPerfCounterMS(perfTimer));
 	}
 
 }
